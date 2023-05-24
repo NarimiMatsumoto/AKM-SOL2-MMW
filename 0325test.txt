@@ -9,6 +9,7 @@
 #Radar  operation end: push Enter
 #
 #Test 0523
+#Test 0524
 startup
 reg_w 0 14 5 #MIPI Lane change
 reg_w 2 49 2 #MIPI output enable
