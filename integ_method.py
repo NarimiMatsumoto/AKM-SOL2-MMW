@@ -18,7 +18,7 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 	DISP_IDNUM = 4
 	FLG_PLOT = 0
 	FLG_DISP = 0
-	T_LOOP = 100#50
+	T_LOOP = 50
 	MAX_MTU = 512
 	def __init__(self) -> None:
 		BLE_UART.__init__(self)
@@ -156,9 +156,6 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 		print("Low Power State")
 
 		await self._rst_ctrl(1)
-
-		await asyncio.sleep(0.1)
-
 		[pgcmd, wrcmd, list]  = self._sort_data(b"reg_r 1 10")
 		r_lpchk_done = ""
 		while r_lpchk_done != 1:
@@ -241,7 +238,6 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 			#If Enter button is pushed, this loop end.
 			if msvcrt.kbhit() and msvcrt.getch() == b'\r':
 				await self._exec_ctrl(0, 0, 0, [0])
-				print('temporalary')
 				if flg_save == 1:
 					writer.save()
 				# writer.close()

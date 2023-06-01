@@ -1,0 +1,9 @@
+#line 1 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\.vscode\\arduino.json"
+{
+    "configuration": "JTAGAdapter=default,PSRAM=disabled,FlashMode=qio,FlashSize=4M,LoopCore=1,EventsCore=1,USBMode=hwcdc,CDCOnBoot=default,MSCOnBoot=default,DFUOnBoot=default,UploadMode=default,PartitionScheme=default,CPUFreq=240,UploadSpeed=115200,DebugLevel=none,EraseFlash=none",
+    "board": "esp32:esp32:esp32s3",
+    "port": "COM27",
+    "programmer": "esptool",
+    "sketch": "spi_ble.ino",
+    "output": "../arduino_output_path"
+}
