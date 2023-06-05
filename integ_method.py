@@ -156,6 +156,9 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 		print("Low Power State")
 
 		await self._rst_ctrl(1)
+
+		await asyncio.sleep(0.1)
+
 		[pgcmd, wrcmd, list]  = self._sort_data(b"reg_r 1 10")
 		r_lpchk_done = ""
 		while r_lpchk_done != 1:
@@ -172,7 +175,7 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 		print(f"ERR_SPI = {err[0]}, ERR_CONT = {err[1]}, ERR_ONESHOT = {err[2]}")
 		if 1 in err:
 			print(f"Error Detect")
-			# await self.disconnect()
+			await self.disconnect()
 
 	async def _autoexe_set(self):
 		loop_set = (self.T_LOOP // 10) - 1
@@ -316,3 +319,5 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 				await self._radar_ope(self.SEQRD_DATSEL, self.SEQRD_BEGIN, self.SEQRD_END, self.FLG_SAVE, self.FILE_PATH, self.FLG_PLOT, self.FLG_DISP)
 			elif list[0] == "radar_end":
 				await self._exec_ctrl(0, 0, 0, [0])
+			elif list[0] == "sleep":
+				await asyncio.sleep(float(list[1]))

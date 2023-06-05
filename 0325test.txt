@@ -8,55 +8,102 @@
 #Radar  operation start: radar_go
 #Radar  operation end: push Enter
 #
-#Test 0523
-#Test 0524
-#Test 0529
 startup
-reg_w 0 14 5 #MIPI Lane change
-reg_w 2 49 2 #MIPI output enable
-reg_w 0 30 0 #add to AK5816
-reg_w 0 31 0
-reg_w 0 32 159
-reg_w 0 39 5
-reg_w 0 40 47
-reg_w 0 35 0
-reg_w 0 36 0
-reg_w 0 43 0
-reg_w 0 44 159
-#reg_w 0 11 48
-reg_w 0 47 1
-reg_w 0 48 156
-reg_w 0 61 16
-#reg_w 2 20 0
-#reg_w 2 22 0
-reg_w 0 10 2
-reg_w 1 11 5
-reg_r 0 2
-reg_r 0 5
-reg_r 0 6
-reg_r 0 7
-reg_w 0 2 16
-reg_w 1 11 5
-reg_r 0 2
-reg_w 0 10 8
-reg_w 2 10 0 # RPU disable
-reg_w 2 10 1 # RPU enable, Angular FFT selected, go to Angular FFT
-reg_r 0 2
-reg_w 0 2 16
-reg_w 0 2 64
-reg_w 0 2 80
-reg_r 0 2
+#reg_w 0 11 32 # Trig setting and TRX state setting(32:Default)
+#reg_w 0 12 3 # Init/Corr.CAL not auto.(3:Default)
+#reg_w 0 13 0 # Internal Trig period:**ms(0:Default/10ms)
+#reg_w 0 14 0 # MIPI Lane change UL96:0x05,FLAT:0x00 (0:Default)
+#reg_w 0 15 179 # ADC Samples(179:Defalt(0xB3)/Auto)
+#reg_w 0 16 0 # MIPI Clock (0:Default/Non continuous)
+#reg_w 0 17 240 # CSI-2 setting(240:Default/CSI-2 output disable)
+#reg_w 0 18 79 # (79:Default/Rx all ON, Only Rx0 ON at mod stop)
+#reg_w 0 19 68 # HPF-Cutoff(68:Default/1MHz)
+#reg_w 0 20 2 # PGA gain(2:Default/0dB)
+#reg_w 0 21 32 # ADC Fs(32:Default/53.3Msps)
+#####reg_w 0 22 0 # Reserved register
+#reg_w 0 23 15 # (15:Default/Tx all ON, All Tx OFF at mod stop)
+#reg_w 0 24 2 # (2:Default/Set A only)
+#reg_w 0 26 46 # SFCWA freq. setting(54/176:Default/7000)
+#reg_w 0 27 224 # SFCWA freq. setting(54/176:Default/7000)
+#####reg_w 0 28 54 # SFCWB freq. setting(54/176:Default/7000)
+#####reg_w 0 29 176 # SFCWB freq. setting(54/176:Default/7000)
+#reg_w 0 25 1 # 1:SFCW setting activate
+#reg_w 0 30 0 # Waiting time after trigger input is Minimum (200:Def.)
+#reg_w 0 31 0 # SWAIT1A time (256(0x0100):Default/3.2us)
+#reg_w 0 32 159 # SWAIT1A time (256(0x0100):Default/3.2us)
+#####reg_w 0 33 1 # SWAIT1B time (256(0x0100):Default/3.2us)
+#####reg_w 0 34 0 # SWAIT1B time (256(0x0100):Default/3.2us)
+#reg_w 0 35 0 # SWAIT2A time (0x0000:Default/0.0125us)
+#reg_w 0 36 0 # SWAIT2A time (0x0000:Default/0.0125us)
+#####reg_w 0 37 0 # SWAIT2B time (0x0000:Default/0.0125us)
+#####reg_w 0 38 0 # SWAIT2B time (0x0000:Default/0.0125us)
+#reg_w 0 39 5 # STM1A time (1/180(436)(0x01B4):Default/5.46us)
+#reg_w 0 40 47 # STM1A time (1/180(436)(0x01B4):Default/5.46us)
+#####reg_w 0 41 1 # STM1B time (1/180(436)(0x01B4):Default/5.46us)
+#####reg_w 0 42 180 # STM1B time (1/180(436)(0x01B4):Default/5.46us)
+#reg_w 0 43 0 # STM2A time (0x0000:Default/0.0125us)
+#reg_w 0 44 159 # STM2A time (0x0000:Default/0.0125us)
+#####reg_w 0 45 0 # STM2B time (0x0000:Default/0.0125us)
+#####reg_w 0 46 0 # STM2B time (0x0000:Default/0.0125us)
+#reg_w 0 47 1 # SFSWEEPA time (1/131(0x0183):Default/-5000MHz)
+#reg_w 0 48 156 # SFSWEEPA time (1/131(0x0183):Default/-5000MHz)
+#####reg_w 0 49 1 # SFSWEEPB time (1/131(0x0183):Default/-5000MHz)
+#####reg_w 0 50 131 # SFSWEEPB time (1/131(0x0183):Default/-5000MHz)
+#reg_w 0 51 0 # Repeated cycle on A/B (0:Default/Not repeated)
+#reg_w 0 52 0 # Wait time on repeated A/B (0:Default / No wait time)
+#reg_w 0 53 0 # Set A repeated cycle (0:Default/16)
+#reg_w 0 54 0 # Set B repeated cycle (0:Default/16)
+#reg_w 0 55 0 # Wait time between A and B (0:Default / No wait time)
+#reg_w 0 56 0 # CWAITA time (0/40(0x0028):Default/Min+500ns)
+#reg_w 0 57 40 # CWAITA time (0/40(0x0028):Default/Min+500ns)
+#####reg_w 0 58 0 # CWAITB time (0/40(0x0028):Default/Min+500ns)
+#####reg_w 0 59 40 # CWAITB time (0/40(0x0028):Default/Min+500ns)
+#reg_w 0 60 80 # TDC Lock setting (80:Default)
+#reg_w 0 61 17 # Not disclosed reg. (17:Defalt/Fast lockup, 16:Not Fast)
+##### No register from 62(0x3F) to 113(0x71)
+#reg_w 0 114 1 # Masked Saturation detect area enable (1:Default/enable)
+reg_r 0 115
+reg_w 0 115 1 # Masked Saturation detect area (0/86(0x0056):Default/1.075us)
+reg_r 0 115
+reg_r 0 116
+reg_w 0 116 181 # Masked Saturation detect area (0/86(0x0056):Default/1.075us)
+reg_r 0 116
+#reg_w 0 117 0 # Max. of WC for FS/FE (0:Default/Not count up)
+#reg_w 0 118 0 # Max. of WC for FS/FE (0:Default/Not count up)
+#reg_w 0 119 0 # Max. of WC for LS/LE (0:Default/Not count up)
+#reg_w 0 120 0 # Max. of WC for LS/LE (0:Default/Not count up)
+#reg_w 1 10 2 # LPCAL result is ignored (2:Default/Error not ignored at LPCAL)
+#reg_w 1 11 4 # InitCAL/CorrCAL result is ignored (4:Default/Error not ignored at InitCAL/CorrCAL)
+reg_r 1 15
+reg_w 1 15 45 # TXG CAL(INIT) not execute (0x2F(47):Default/execute)
+reg_r 1 15
+reg_r 1 17
+reg_w 1 17 45 # TXG CAL(CORR) not execute (0x2F(47):Default/execute)
+reg_r 1 17
+#reg_w 1 18 39 # TXG/RXG CAL freq. (0x2710(39/16):Default/10000MHz+50GHz=60GHz)
+#reg_w 1 19 16 # TXG/RXG CAL freq. (0x2710(39/16):Default/10000MHz+50GHz=60GHz)
 reg_r 2 10
-reg_r 0 2
-execonly 1
-reg_r 0 2
-reg_r 0 7
-execonly 0
-reg_w 0 2 16
-reg_r 0 2
+reg_w 2 10 1 # RPU enable,AngleFFT,ContinuedRadarProcess after CFAR (97:Default/BeamForm,Not after RangeCFAR)
+reg_r 2 10
+reg_r 2 18
+reg_w 2 18 103 # DeciFil:NoByp. (111:Default/Byp.)
+reg_r 2 18
+#reg_w 2 20 0 # Antenna pattern setting (0:Default)
+#reg_w 2 22 0 # Antenna pattern setting (0:Default)
+#reg_w 2 49 2 # ADC data MIPI output enable (0:Default/disable)
+#reg_w 5 36 2 # Tx power gain (0x0266(2/102):Default/6dB)
+#reg_w 5 37 102 # Tx power gain (0x0266(2/102):Default/6dB)
+#reg_w 5 38 157 # TXG CAL REF.(0xA8C0(168/192):Default)
+#reg_w 5 39 8 # TXG CAL REF.(0xA8C0(168/192):Default)
+#If TXGCAL error occured, the sum value of 38/39 be decreased 1500 and retry/repeated until no error.
 reg_r 0 8
-reg_w 0 10 8
+reg_w 0 10 2 # Go to Stanby state
+sleep 0.1
+reg_r 0 8
+reg_w 0 10 8 # Go to LP state
+sleep 0.02
+reg_r 0 8
 reg_r 0 2
-reg_w 0 2 16
-execonly 1
+reg_w 0 2 16 # Error cleared
 reg_r 0 2
+radar_go

@@ -61,6 +61,9 @@ class GEN_DATA:
 		elif list[0] == "end":
 			pgcmd = ""
 			wrcmd = "end"
+		elif list[0] == "sleep":
+			pgcmd = ""
+			wrcmd = "sleep"
 		else:
 			pgcmd = ""
 			wrcmd = ""

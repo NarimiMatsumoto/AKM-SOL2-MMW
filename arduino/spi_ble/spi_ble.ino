@@ -17,15 +17,15 @@
 // #define GPIO_0to31CLR_REG   *((volatile unsigned long *)GPIO_OUT_W1TC_REG)
 // #define GPIO_32to48SET_REG   *((volatile unsigned long *)GPIO_OUT1_W1TS_REG)
 // #define GPIO_32to48CLR_REG   *((volatile unsigned long *)GPIO_OUT1_W1TC_REG)
-    #define PDN   6  //
-    #define RSTN 4  //
-    #define EXEC 5  //
+    #define PDN   3//6  //
+    #define RSTN 46//4  //
+    #define EXEC 14//5  //
 #include <SPI.h>
 // Define ALTERNATE_PINS to use non-standard GPIO pins for SPI bus
-    #define VSPI_MISO   37  //GPIO37
-    #define VSPI_MOSI   35  //GPIO35
-    #define VSPI_SCLK   36  //GPIO36
-    #define VSPI_SS        39 //GPIO39
+    #define VSPI_MISO   21//CDTO//37  //GPIO37
+    #define VSPI_MOSI   45//CDTI//35  //GPIO35
+    #define VSPI_SCLK   47//36  //GPIO36
+    #define VSPI_SS     48//39 //GPIO39
 
 #if CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32S3
 #define VSPI FSPI

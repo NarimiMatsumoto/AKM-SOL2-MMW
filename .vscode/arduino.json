@@ -1,0 +1,7 @@
+{
+    "configuration": "JTAGAdapter=default,PSRAM=disabled,FlashMode=qio,FlashSize=4M,LoopCore=1,EventsCore=1,USBMode=hwcdc,CDCOnBoot=default,MSCOnBoot=default,DFUOnBoot=default,UploadMode=default,PartitionScheme=default,CPUFreq=240,UploadSpeed=115200,DebugLevel=none,EraseFlash=none",
+    "board": "esp32:esp32:esp32s3",
+    "programmer": "esptool",
+    "port": "COM27",
+    "sketch": "arduino\\spi_ble\\spi_ble.ino"
+}

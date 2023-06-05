@@ -1,0 +1,42 @@
+#control : command
+#Read SPI 8bit : reg_r page(dec) add(dec)
+#Write SPI 8bit : reg_w page(dec) add(dec) data(dec)
+#Read all register : read_pg page(dec)
+#Powerdown pin control : pdn sig(dec)
+#Reset pin control : rstn sig(dec)
+#Startup sequence : startup 
+#Radar  operation start: radar_go
+#Radar  operation end: push Enter
+#
+startup
+reg_r 0 17
+reg_w 0 17 241 # CSI-2 output enable(240:Default/CSI-2 output disable)
+reg_r 0 17
+reg_r 0 115
+reg_w 0 115 1 # Masked Saturation detect area (0x0056(0/86):Default/1.075us)
+reg_r 0 115
+reg_r 0 116
+reg_w 0 116 181 # Masked Saturation detect area (0x0056(0/86):Default/1.075us)
+reg_r 0 116
+reg_r 1 15
+reg_w 1 15 45 # TXG CAL(INIT) not execute (0x2F(47):execute)
+reg_r 1 15
+reg_r 1 17
+reg_w 1 17 45 # TXG CAL(CORR) not execute (0x2F(47):execute)
+reg_r 1 17
+reg_r 2 10
+reg_w 2 10 96 # RPU disable(0x60) (97:Default/enable)
+reg_r 2 10
+reg_r 2 18
+reg_w 2 18 103 # DeciFil:NoByp (111:Default/Byp.,Auto)
+reg_r 2 18
+reg_r 2 49
+reg_w 2 49 2 # ADC data MIPI output enable (0:Default/disable)
+reg_r 2 49
+#reg_r 5 38
+#reg_w 5 38 157 # TXG CAL REF.(0xA8C0(168/192):Default)
+#reg_r 5 38
+#reg_r 5 39
+#reg_w 5 39 8 # TXG CAL REF.(0xA8C0(168/192):Default)
+#reg_r 5 39
+execonly 1
