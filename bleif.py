@@ -1,10 +1,12 @@
+import tkinter as tk
+from tkinter import ttk
 
 import sys
 import os
 import asyncio
 from integ_method import Integ_Method
 
-input_mode = 1 #0:comand line 1:file
+input_mode = 0 #0:comand line 1:file
 cur_dir = os.path.dirname(__file__)
 #cmd_file = "test.txt"
 cmd_file = "1_rpu_exec.txt"
@@ -33,9 +35,40 @@ async def main():
 #MAIN
 		if input_mode == 0 :
 			while True:
-				print("start typing and press ENTER...")
-				data = await loop.run_in_executor(None, sys.stdin.buffer.readline) #data format : b'reg r 1 2 5\r\n'
-				await uart._exe_cmd(data)
+
+				##### 2023/06/06 matsumoto start ####
+				
+				# ボタンが押されたときの処理
+				def button_click(event):
+					print("rader GO from tkinter GUI!!!")
+					data = "reg_r 1 2 5"
+					uart._exe_cmd(data)						
+
+				# rootメインウィンドウの設定
+				root = tk.Tk()
+				root.title("Setting")
+				root.geometry("400x200")
+
+				# メインフレームの作成と設置
+				frame = tk.Frame(root)
+				frame.pack(padx=20, pady=10)
+
+				# 各種ウィジェットの作成
+				button = ttk.Button(frame, text="rader go")
+				# 各種ウィジェットの設置
+				button.grid(row=0, column=0)
+
+				#イベント処理の設定
+				button.bind("<ButtonPress>", button_click)
+
+				root.mainloop()
+
+				# print("start typing and press ENTER...")
+				# data = await loop.run_in_executor(None, sys.stdin.buffer.readline) #data format : b'reg r 1 2 5\r\n'
+				# await uart._exe_cmd(data)
+
+				##### 2023/06/06 matsumoto end ####
+
 		else:
 			with open(cmd_filepath) as f:
 				for line in f:
