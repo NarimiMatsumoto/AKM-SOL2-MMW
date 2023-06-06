@@ -9,8 +9,8 @@ from bleak.backends.device import BLEDevice
 class BLE_UART:
 	#ESP32_MAC = "F4:12:FA:5B:3D:81"# Shida-san's module
 	#ESP32_MAC = "F4:12:FA:5B:3F:A9"#Kishigami-san's module
-	#ESP32_MAC = "7C:DF:A1:FD:D6:4D"#Matsumoto-san's module
-	ESP32_MAC = "7C:DF:A1:FD:6E:89"
+	ESP32_MAC = "7C:DF:A1:FD:D6:4D"#Matsumoto-san's module
+	#ESP32_MAC = "7C:DF:A1:FD:6E:89"
 	#ESP32_MAC = "7C:DF:A1:FD:D5:E9"
 	UART_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
 	UART_RX_CHAR_UUID = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
