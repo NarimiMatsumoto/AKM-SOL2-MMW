@@ -321,3 +321,11 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 				await self._exec_ctrl(0, 0, 0, [0])
 			elif list[0] == "sleep":
 				await asyncio.sleep(float(list[1]))
+
+# ######GUI######
+	# ボタンが押されたときの処理
+	# async def button_click(self):
+	# 	print("rader GO from tkinter GUI!!!")
+	# 	# data = line.encode("reg_r 0 115")
+	# 	# data = await loop.run_in_executor(None, sys.stdin.buffer.readline) #data format : b'reg r 1 2 5\r\n'
+	# 	await self._exe_cmd(data)		

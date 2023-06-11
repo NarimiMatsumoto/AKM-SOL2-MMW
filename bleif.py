@@ -36,13 +36,13 @@ async def main():
 		if input_mode == 0 :
 			while True:
 
-				##### 2023/06/06 matsumoto start ####
-				
 				# ボタンが押されたときの処理
-				def button_click(event):
+				# def button_click(event):
+				async def button_click(event):
 					print("rader GO from tkinter GUI!!!")
-					data = "reg_r 1 2 5"
-					uart._exe_cmd(data)						
+					# data = line.encode("reg_r 0 115")
+					data = await loop.run_in_executor(None, sys.stdin.buffer.readline) #data format : b'reg r 1 2 5\r\n'
+					await uart._exe_cmd(data)						
 
 				# rootメインウィンドウの設定
 				root = tk.Tk()
@@ -55,11 +55,17 @@ async def main():
 
 				# 各種ウィジェットの作成
 				button = ttk.Button(frame, text="rader go")
+				# button = ttk.Button(frame, text="rader go", command=lambda:await uart.button_click())
 				# 各種ウィジェットの設置
 				button.grid(row=0, column=0)
 
-				#イベント処理の設定
-				button.bind("<ButtonPress>", button_click)
+				# #イベント処理の設定
+				# button.bind("<ButtonPress>", button_click)
+				# button.bind("<ButtonPress>", await uart.button_click)
+				button.bind("<ButtonPress>", lambda event: asyncio.ensure_future(button_click(event)))
+				# loop = asyncio.get_event_loop() # get the event loop which schedule my coroutine
+    			# loop.run_forever()
+				# asyncio.get_event_loop().run_until_complete()
 
 				root.mainloop()
 
