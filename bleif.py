@@ -7,7 +7,7 @@ from integ_method import Integ_Method
 input_mode = 1 #0:comand line 1:file
 cur_dir = os.path.dirname(__file__)
 #cmd_file = "test.txt"
-cmd_file = "0325test.txt"
+cmd_file = "2_adcout_by_exec.txt"
 cmd_filepath = cur_dir + "\\" + cmd_file
 
 async def main():
