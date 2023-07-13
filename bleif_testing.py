@@ -97,9 +97,9 @@ class Window(tk.Tk):
 		label_page   = tk.Label(labelframe_2, text='Page  ', width=10)
 		label_address= tk.Label(labelframe_2, text='Adress', width=10)
 		label_data   = tk.Label(labelframe_2, text='Data  ', width=10)
-		txt_wpage    = tk.Entry(labelframe_2, width=10)
-		txt_waddress = tk.Entry(labelframe_2, width=10)
-		txt_wdata    = tk.Entry(labelframe_2, width=10)
+		txt_wpage    = tk.Entry(labelframe_2, justify=tk.RIGHT, width=10)
+		txt_waddress = tk.Entry(labelframe_2, justify=tk.RIGHT, width=10)
+		txt_wdata    = tk.Entry(labelframe_2, justify=tk.RIGHT, width=10)
 
 		button_write.grid(row=0, column=0, sticky=tk.W, padx=5, pady=10, ipadx=5, ipady=5)
 		button_read.grid(row=0, column=1, sticky=tk.W, padx=5, pady=10, ipadx=5, ipady=5)
