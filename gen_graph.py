@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import random
 
 class GEN_GRAPH:
+
 	def __init__(self) -> None:
 		pass
 
@@ -10,7 +11,11 @@ class GEN_GRAPH:
 		fig = plt.figure(num=1, dpi=100)
 		ax = fig.add_subplot(111, projection='3d')
 		ax.view_init(elev=10, azim=-165)
-		fig.show()
+		ax.set_title('3D VIEW') #
+		ax.set_xticklabels([])
+		ax.set_yticklabels([])
+		ax.set_zticklabels([])
+		#fig.show()
 		while not plt.fignum_exists(1):
 			pass
 		return fig, ax
@@ -22,6 +27,7 @@ class GEN_GRAPH:
 		ax.set_xlim(0,127)
 		ax.set_ylim(0,31)
 		ax.set_zlim(0,31)
+		#ax.invert_yaxis()
 		# ax.legend(bbox_to_anchor=(1.1, 1.0), loc='upper left', title='id', ncol=4, fontsize=8)
 
 	def _set_mrker(self, ax, df, num):

@@ -75,6 +75,7 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 		#mv = memoryview(rd).cast('H') <- 2byte unsigned
 		#mv[0] = 256, mv[1] = 512, mv[2] = 768
 		rdlst = rdbuf.tolist()
+		#print(rdlst)
 		if logon == 1:
 			for i in range(len(rdlst)):
 				print(f"add={i} rddata={rdlst[i]}")
@@ -281,10 +282,9 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 			if flg_disp == 1:
 				self._prnt_tgtlst(tgtlst, frame, self.UPDATE_FRM, self.DISP_IDNUM, t_fin)
 
-
-
 ######Master######
 	async def _exe_cmd(self, data):
+		#print("test000")
 		[pgcmd, wrcmd, list]  = self._sort_data(data)
 		if ((not wrcmd) and (not pgcmd)) or ("end" in wrcmd):
 			print("Exit")
@@ -292,11 +292,16 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 		else:
 	#SPI
 			if list[0] == "reg_r":
+					#print("test001")
 					await self._queue_clr()
+					#print("list = ", pgcmd, wrcmd, list)
 					rd = await self._read_spi(pgcmd, wrcmd, list, 1)
+					return rd
 			elif list[0] == "read_pg":
 				await self._queue_clr()
-				rd = await self._read_pg(pgcmd, wrcmd, list, 1)
+				#print("list = ", pgcmd, wrcmd, list)
+				rdlst = await self._read_pg(pgcmd, wrcmd, list, 1)
+				return rdlst
 			elif list[0] == "reg_w":
 					await self._write_spi(pgcmd, wrcmd, list, 1)
 			elif list[0] == "page":
@@ -321,3 +326,5 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 				await self._exec_ctrl(0, 0, 0, [0])
 			elif list[0] == "sleep":
 				await asyncio.sleep(float(list[1]))
+
+				
