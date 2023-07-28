@@ -1,0 +1,46 @@
+#control : command
+#Read SPI 8bit : reg_r page(dec) add(dec)
+#Write SPI 8bit : reg_w page(dec) add(dec) data(dec)
+#Read all register : read_pg page(dec)
+#Powerdown pin control : pdn sig(dec)
+#Reset pin control : rstn sig(dec)
+#Startup sequence : startup 
+#Radar  operation start: radar_go
+#Radar  operation end: push Enter
+#
+#startup
+reg_r 0 115
+reg_w 0 115 1 # Masked Saturation detect area (0x0056(0/86):Default/1.075us)
+reg_r 0 115
+reg_r 0 116
+reg_w 0 116 181 # Masked Saturation detect area (0x0056(0/86):Default/1.075us)
+reg_r 0 116
+reg_r 1 15
+reg_w 1 15 45 # TXG CAL(INIT) not execute (0x2F(47):execute)
+reg_r 1 15
+reg_r 1 17
+reg_w 1 17 45 # TXG CAL(CORR) not execute (0x2F(47):execute)
+reg_r 1 17
+reg_r 2 10
+reg_w 2 10 1 # RPU enable,AngleFFT,ContinuedRadarProcess after CFAR
+reg_r 2 10
+reg_r 2 18
+reg_w 2 18 103 # DeciFil:NoByp (111:Default/Byp.,Auto)
+reg_r 2 18
+#reg_r 5 38
+#reg_w 5 38 157 # TXG CAL REF.(0xA8C0(168/192):Default)
+#reg_r 5 38
+#reg_r 5 39
+#reg_w 5 39 8 # TXG CAL REF.(0xA8C0(168/192):Default)
+#reg_r 5 39
+reg_r 0 8
+reg_w 0 10 2 # Go to Standby state
+sleep 0.1
+reg_r 0 8
+reg_w 0 10 8 # Go to LP state
+sleep 0.02
+reg_r 0 8
+reg_r 0 2
+reg_w 0 2 16
+reg_r 0 2
+#radar_go
