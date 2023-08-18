@@ -80,9 +80,11 @@ class Window(tk.Tk):
 
 		button_connect = tk.Button(labelframe_1, text=" Connect  ", width=10, command=lambda: self.loop.create_task(self.connect_ble()))
 		button_discon  = tk.Button(labelframe_1, text="Disconnect", width=10, command=lambda: asyncio.create_task(self.discongui()))
+		button_stop    = tk.Button(labelframe_1, text="   STOP   ", width=10, command=lambda: asyncio.create_task(self.stpgui()))
 		button_start   = tk.Button(labelframe_1, text=" Startup  ", width=10, command=lambda: asyncio.create_task(self.sugui()))
 		button_radargo = tk.Button(labelframe_1, text=" Radar go ", width=10, command=lambda: asyncio.create_task(self.rggui()))
 		button_setfile = tk.Button(labelframe_1, text=" SET File ", width=10, command=lambda: asyncio.create_task(self.sfgui()))
+		button_exefile = tk.Button(labelframe_1, text=" EXEC File", width=10, command=lambda: asyncio.create_task(self.efgui()))
 		button_pdnl    = tk.Button(labelframe_1, text="  PDN L   ", width=10, command=lambda: asyncio.create_task(self.pdngui(0)))
 		button_pdnh    = tk.Button(labelframe_1, text="  PDN H   ", width=10, command=lambda: asyncio.create_task(self.pdngui(1)))
 		button_rstnl   = tk.Button(labelframe_1, text="  RSTN L  ", width=10, command=lambda: asyncio.create_task(self.rstngui(0)))
@@ -92,9 +94,11 @@ class Window(tk.Tk):
 
 		button_connect.grid(row=0, column=0, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
 		button_discon.grid(row=0, column=1, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_stop.grid(row=0, column=2, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
 		button_start.grid(row=1, column=0, sticky=tk.W,  padx=5, pady=8, ipadx=5, ipady=5)
 		button_radargo.grid(row=1, column=1, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
 		button_setfile.grid(row=1, column=2, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_exefile.grid(row=1, column=3, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
 		button_pdnl.grid(row=2, column=0, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
 		button_pdnh.grid(row=3, column=0, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
 		button_rstnl.grid(row=2, column=1, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
@@ -626,17 +630,31 @@ class Window(tk.Tk):
 
 	# Radar go
 	async def rggui(self):
-		global lines, event
-		cmd = "radar_go"
-		add_cmd = cmd.encode()
-		lines.append(add_cmd)
-		event = 4 # command event
+		global d, event
+		d = "radar_go"
+		event = 1 # command event
+		#global lines, event
+		#cmd = "radar_go"
+		#add_cmd = cmd.encode()
+		#lines.append(add_cmd)
+		#event = 4 # command event
+
+	# Stop
+	async def stpgui(self):
+		await Integ_Method._flg_stph(self)
+		return
 
 	# Set file
 	async def sfgui(self):
 		global lines, event
 		initial_dir = os.getcwd()
 		file_path = filedialog.askopenfilename(initialdir=initial_dir)
+
+		if not file_path:
+			print("ファイルが選択されませんでした。")
+			lines = []
+			return lines
+
 		try:
 			with open(file_path, 'r', encoding='utf-8') as f:
 				for line in f:
@@ -655,6 +673,11 @@ class Window(tk.Tk):
 		lines = [line.encode() for line in lines]
 		event = 0 # command event
 		return lines
+
+	# Execute file
+	async def efgui(self):
+		global event
+		event = 4 # command event
 
 	async def command(self):
 		global event
@@ -676,10 +699,12 @@ class Window(tk.Tk):
 		event = 0 # Go to idle state
 		return data
 
-	async def command_radargo(self):
-		#global lines
+	async def command_exec(self):
 		global event
+		text = "sleep 0.5"
+		data = text.encode
 		event = 0 # Go to idle state
+		return data
 
 	async def connect_ble(self):
 		async with Integ_Method() as uart:
@@ -709,9 +734,12 @@ class Window(tk.Tk):
 				while True:
 					if(event == 0):# idle state
 						data = await loop.run_in_executor(None, await self.idle())
+						#print(data)
 						await uart._exe_cmd(data)
+						#print(event)
 					elif(event == 1):# Write command event
 						data = await loop.run_in_executor(None, await self.command())
+						#print(data)
 						await uart._exe_cmd(data)
 					elif(event == 2):# Read back command event
 						data = await loop.run_in_executor(None, await self.command_read())
@@ -721,8 +749,12 @@ class Window(tk.Tk):
 						p_readdata = await uart._exe_cmd(data)
 					elif(event == 4):# 
 						for cmd in lines:
+							#print(cmd)
 							await uart._exe_cmd(cmd)
-						await loop.run_in_executor(None, await self.command_radargo())
+							#print(event)
+						#await asyncio.sleep(0.1)
+						data = await loop.run_in_executor(None, await self.command_exec())
+						await uart._exe_cmd(data)
 					elif(event == 99):# disconnect
 						break
 

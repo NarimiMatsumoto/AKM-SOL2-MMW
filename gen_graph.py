@@ -15,12 +15,13 @@ class GEN_GRAPH:
 		ax.set_xticklabels([])
 		ax.set_yticklabels([])
 		ax.set_zticklabels([])
+		#self._config_graph(ax)
 		#fig.show()
 		while not plt.fignum_exists(1):
 			pass
 		return fig, ax
 
-	def _config_graph(self, ax):
+	def _config_graph(self, ax):	
 		ax.set_xlabel('Range')
 		ax.set_ylabel('Azimuth')
 		ax.set_zlabel('Elevation')
@@ -43,6 +44,15 @@ class GEN_GRAPH:
 		self._set_mrker(ax, df, num)
 		fig.canvas.draw()
 		fig.canvas.flush_events()
+
+	def _clr_graph(self, ax):
+		ax.cla()
+		ax.set_xticklabels([])
+		ax.set_yticklabels([])
+		ax.set_zticklabels([])
+		ax.set_xlabel('')
+		ax.set_ylabel('')
+		ax.set_zlabel('')
 
 # For debug
 	def _gen_tsig(self, num):

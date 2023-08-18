@@ -20,11 +20,13 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 	FLG_DISP = 0
 	T_LOOP = 50
 	MAX_MTU = 512
+	FLG_RGO_STP = 0
+	global flg_stp_h
+	flg_stp_h = 0
 	def __init__(self) -> None:
 		BLE_UART.__init__(self)
 		GEN_DATA.__init__(self)
 		GEN_GRAPH.__init__(self)
-
 
 ######Access ESP32######
 	async def _send_data(self, cmd:str):
@@ -211,12 +213,17 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 
 		return tx_num, lst_rep, temp_dict[datsel]
 
+	async def _flg_stph(self):
+		global flg_stp_h
+		flg_stp_h = 1
+		return flg_stp_h
+
 	async def _radar_ope(self, dat_type:int, id_begin:int, id_end:int, flg_save:int, save_path:str, flg_plot:int, flg_disp:int):
 		await self._queue_clr()
 		await self._autoexe_set()
 		[txnum, repnum, num_2byte] = await self._tgtlst_set(dat_type, id_begin, id_end)
 		frame = 0
-			
+
 		if flg_plot == 1:
 			[fig, ax] = self._init_graph()
 
@@ -227,6 +234,8 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 
 		# print(f"exec:{time.perf_counter()}")
 		# await asyncio.sleep(0.4)
+
+		flg_stp = 0
 
 		while True:
 			#ESP32 Sequense
@@ -239,14 +248,19 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 			#ESP32 Sequense
 			frame += 1
 
+			global flg_stp_h
+
 			#If Enter button is pushed, this loop end.
-			if msvcrt.kbhit() and msvcrt.getch() == b'\r':
+			if ((msvcrt.kbhit() and msvcrt.getch() == b'\r') or (flg_stp == 1)):
 				await self._exec_ctrl(0, 0, 0, [0])
 				if flg_save == 1:
 					writer.save()
 				# writer.close()
+				flg_stp_h = 0
+				self._clr_graph(ax)
 				break
 			#
+
 			t_st = time.perf_counter()
 			rd_all = []
 			for _ in range(txnum):
@@ -282,9 +296,13 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 			if flg_disp == 1:
 				self._prnt_tgtlst(tgtlst, frame, self.UPDATE_FRM, self.DISP_IDNUM, t_fin)
 
+			if flg_stp_h == 0:
+				flg_stp = 0
+			else:
+				flg_stp = 1
+
 ######Master######
 	async def _exe_cmd(self, data):
-		#print("test000")
 		[pgcmd, wrcmd, list]  = self._sort_data(data)
 		if ((not wrcmd) and (not pgcmd)) or ("end" in wrcmd):
 			print("Exit")
