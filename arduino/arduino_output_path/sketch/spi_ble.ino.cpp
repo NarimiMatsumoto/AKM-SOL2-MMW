@@ -19,15 +19,15 @@
 // #define GPIO_0to31CLR_REG   *((volatile unsigned long *)GPIO_OUT_W1TC_REG)
 // #define GPIO_32to48SET_REG   *((volatile unsigned long *)GPIO_OUT1_W1TS_REG)
 // #define GPIO_32to48CLR_REG   *((volatile unsigned long *)GPIO_OUT1_W1TC_REG)
-    #define PDN   6  //
-    #define RSTN 4  //
-    #define EXEC 5  //
+    #define PDN   3//6  //
+    #define RSTN 46//4  //
+    #define EXEC 14//5  //
 #include <SPI.h>
 // Define ALTERNATE_PINS to use non-standard GPIO pins for SPI bus
-    #define VSPI_MISO   37  //GPIO37
-    #define VSPI_MOSI   35  //GPIO35
-    #define VSPI_SCLK   36  //GPIO36
-    #define VSPI_SS        39 //GPIO39
+    #define VSPI_MISO   21//CDTO//37  //GPIO37
+    #define VSPI_MOSI   45//CDTI//35  //GPIO35
+    #define VSPI_SCLK   47//36  //GPIO36
+    #define VSPI_SS     48//39 //GPIO39
 
 #if CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32S3
 #define VSPI FSPI
@@ -115,32 +115,34 @@ const int PDN_CTRL = 259;
 const int RSTN_CTRL = 260;
 const int EXE_CTRL = 261;
 const int EXE_CTRL_ONLY = 262;
+const int FFT_CAPT = 263;
+const int FFT_EXEC = 264;
 
 
 ////////////////////////////////////////////////
 //SPI Function Start
 ////////////////////////////////////////////////
-#line 121 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
+#line 123 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
 void w_spi(SPIClass *spi, byte add, byte data);
-#line 134 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
+#line 136 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
 uint8_t r_spi(SPIClass *spi, byte add, byte data);
-#line 152 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
+#line 154 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
 uint16_t r_spi_16b(SPIClass *spi);
-#line 172 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
+#line 174 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
 void pdn_ctrl(int sig);
-#line 183 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
+#line 185 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
 void rstn_ctrl(int sig);
-#line 194 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
+#line 196 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
 uint8_t exec_ctrl(int sig);
-#line 213 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
+#line 215 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
 void wait_state(SPIClass* spi, uint8_t add, uint8_t state_num);
-#line 228 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
+#line 230 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
 void setup();
-#line 317 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
+#line 319 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
 void loop();
-#line 448 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
+#line 533 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
 int stringToIntValues(String str, int value[], char delim);
-#line 121 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
+#line 123 "C:\\Users\\a1024297\\OneDrive - 旭化成株式会社\\Document\\3_AK5816\\3_ボード開発\\1_SPI_GUI_GIT\\AKM-SOL2-MMW\\arduino\\spi_ble\\spi_ble.ino"
 void w_spi(SPIClass *spi, byte add, byte data) {
     //use it as you would the regular arduino SPI API
     uint16_t txdata;
@@ -323,9 +325,9 @@ void setup() {
 
     pCharacteristic->setCallbacks(new MyCallbacks());
 
-    // uint8_t macBT[6];
-    // esp_read_mac(macBT, ESP_MAC_BT);
-    // Serial.printf("[Bluetooth] Mac Address = %02X:%02X:%02X:%02X:%02X:%02X\r\n", macBT[0], macBT[1], macBT[2], macBT[3], macBT[4], macBT[5]);
+    uint8_t macBT[6];
+    esp_read_mac(macBT, ESP_MAC_BT);
+    Serial.printf("[Bluetooth] Mac Address = %02X:%02X:%02X:%02X:%02X:%02X\r\n", macBT[0], macBT[1], macBT[2], macBT[3], macBT[4], macBT[5]);
     // Start the service
     pService->start();
 
@@ -401,18 +403,19 @@ void loop() {
                             //wait_state(vspi, 0x08, 0x0F);//Wait STBY
                             //wait_state(vspi, 0x08, 0x0F);//Wait TRX
                             //wait_state(vspi, 0x09, 0x0F);//Wait RPU_DONE
-                            wait_state(vspi, 0x88, 0x03);//Wait STBY
-                            Serial.println("STBY state");
-                            wait_state(vspi, 0x88, 0x04);//Wait TRX
-                            Serial.println("TRX state");
+                            //wait_state(vspi, 0x88, 0x03);//Wait STBY
+                            //Serial.println("STBY state");
+                            //wait_state(vspi, 0x88, 0x04);//Wait TRX
+                            //Serial.println("TRX state");
                             wait_state(vspi, 0x89, 0x0C);//Wait RPU_DONE
                             //wait_state(vspi, 0x89, 0x07);//Wait RCFAR_DONE
-                            Serial.println("RCFAR_DONE");
+                            //Serial.println("RCFAR_DONE");
                             // st = millis();
-                            w_spi(vspi, 0x02, 0x03);//To Page 3
+                            //w_spi(vspi, 0x02, 0x03);//To Page 3 "Not access to 0x02 since ECC error(bug) is detected "
                             w_spi(vspi, 0x0A, 0x10);//TGTLST_HOLD
                             w_spi(vspi, 0x0A, 0x11);//SEQRD_ST
                             for (int i = 0; i<int_rx[3]; i++){
+                                delayMicroseconds(5000);
                                 for (int j = 0; j<int_rx[4+i]; j++){
                                     rddata_16b = r_spi_16b(vspi);
                                     txValue = float(rddata_16b);
@@ -425,7 +428,7 @@ void loop() {
                                 pCharacteristic->notify(); // Send the value to the app!
                                 // Serial.println(2*int_rx[4+i]);
                             }
-                            w_spi(vspi, 0x02, 0x03);//To Page 3
+                            //w_spi(vspi, 0x02, 0x03);//To Page 3 "Not access to 0x02 since ECC error(bug) is detected "
                             w_spi(vspi, 0x0A, 0x10);//TGTLST_HOLD
                             w_spi(vspi, 0x0A, 0x00);//TGTLST_UPDATE
                             t_sp = millis();
@@ -443,6 +446,88 @@ void loop() {
                         Serial.println("Finish TargetList Read");
                     }
                     break;
+                case FFT_CAPT:
+                    for(int tag = 0; tag<16; tag++){
+                        w_spi(vspi, 29, tag);//0x1D(d'29)にtagを書く(tag選択)
+                        for (int i = 0; i<int_rx[1]; i++){//int_rx[1]=tagあたりの読み出す回数(510byte(=85bin)/回) ※1binあたり6byteのため
+                            for (int j = 0; j<(int_rx[2+i]/6); j++){//int_rx[2]=1回目の読み出しバイト数(例:510),int_rx[3]=2回目の読み出しバイト数(例:258) [510+258]/6=128bin
+                                w_spi(vspi, 30, j+(i*85));//0x1E(d'30)に0~41を書く(bin0からbin41までの計42binを読む)
+                                for (int k = 31; k<34; k++){//0x1F(d'31)~0x21(d'33)を読んで(j=0のときは)rd_buf[0]~rd_buf[2]に格納(Iデータ)
+                                    rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
+                                    txValue = float(rd_buf[(k-31)+(j*6)]);
+                                }
+                                for (int k = 34; k<37; k++){//0x22(d'34)~0x24(d'36)を読んで(j=0のときは)rd_buf[3]~rd_buf[5]に格納(Qデータ)
+                                    rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
+                                    txValue = float(rd_buf[(k-31)+(j*6)]);
+                                }
+                            }
+                            pCharacteristic->setValue(rd_buf, int_rx[2+i]);
+                            pCharacteristic->notify(); // Send the value to the app!
+                        }
+                    }
+                    break;
+                case FFT_EXEC:
+                    flg_exec = exec_ctrl(int_rx[1]);
+                    //delay(500);
+                    if (flg_exec == 1){
+                        while (deviceConnected && rxValue.length() == 0){
+                            //delay(100);
+                            t_st = millis();
+                            //wait_state(vspi, 0x88, 0x03);//Wait STBY
+                            //Serial.println("STBY state");
+                            //wait_state(vspi, 0x88, 0x04);//Wait TRX
+                            //Serial.println("TRX state");
+                            wait_state(vspi, 0x89, 0x02);//Wait RFFT_DONE
+                            //wait_state(vspi, 0x89, 0x0C);//Wait RPU_DONE
+                            ////wait_state(vspi, 0x89, 0x07);//Wait RCFAR_DONE
+                            //Serial.println("RCFAR_DONE");
+                            // st = millis();
+                            //w_spi(vspi, 0x02, 0x03);//To Page 3 "Not access to 0x02 since ECC error(bug) is detected "
+                            w_spi(vspi, 0x0A, 0x10);//TGTLST_HOLD
+
+                            for(int tag = 0; tag<16; tag++){
+                                w_spi(vspi, 29, tag);//0x1D(d'29)にtagを書く(tag選択)
+                                for (int i = 0; i<int_rx[3]; i++){//int_rx[3]=tagあたりの読み出す回数(510byte(=85bin)/回) ※1binあたり6byteのため
+                                    delayMicroseconds(5000);
+                                    for (int j = 0; j<(int_rx[4+i]/6); j++){//int_rx[4]=1回目の読み出しバイト数(例:510),int_rx[5]=2回目の読み出しバイト数(例:258) [510+258]/6=128bin
+                                        w_spi(vspi, 30, j+(i*85));//0x1E(d'30)でbinを指定する。0 to 84 and 0(85) to 42(127)  , 510/6=85,  258/6=43
+                                        for (int k = 31; k<34; k++){//0x1F(d'31)~0x21(d'33)を読んで(j=0のときは)rd_buf[0]~rd_buf[2]に格納(Iデータ)
+                                            rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
+                                            //txValue = float(rd_buf[(k-31)+(j*6)]);
+                                            //if(k==32){Serial.println(txValue);}
+                                        }
+                                        for (int k = 34; k<37; k++){//0x22(d'34)~0x24(d'36)を読んで(j=0のときは)rd_buf[3]~rd_buf[5]に格納(Qデータ)
+                                            rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
+                                            //txValue = float(rd_buf[(k-31)+(j*6)]);
+                                        }
+                                    }
+                                    int getArrayLength = sizeof(rd_buf);
+                                    Serial.print("rd_buf= ");
+                                    Serial.print(int_rx[4+i]);
+                                    Serial.print(" / ");
+                                    Serial.print(getArrayLength);
+                                    Serial.println(" byte");
+                                    pCharacteristic->setValue(rd_buf, int_rx[4+i]);
+                                    pCharacteristic->notify(); // Send the value to the app!
+                                }
+                            }
+                            //w_spi(vspi, 0x02, 0x03);//To Page 3 "Not access to 0x02 since ECC error(bug) is detected "
+                            //w_spi(vspi, 0x0A, 0x10);//TGTLST_HOLD
+                            w_spi(vspi, 0x0A, 0x00);//TGTLST_UPDATE
+                            t_sp = millis();
+                            // Serial.println(t_sp-t_st);
+                            while (t_sp-t_st < int_rx[2]){
+                                t_sp = millis();
+                                // Serial.println(t_sp-t_st);
+                                // delay(1);
+                            }
+                            //Serial.print(t_sp-t_st);
+                            //Serial.println("msec");
+                        }
+                    }
+                    else{
+                        Serial.println("Finish FFT Capture");
+                    }
                 default:
                     rx_buf = int_rx[0];
             }

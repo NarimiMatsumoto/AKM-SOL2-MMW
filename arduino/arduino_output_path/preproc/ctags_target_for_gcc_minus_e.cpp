@@ -129,6 +129,8 @@ const int PDN_CTRL = 259;
 const int RSTN_CTRL = 260;
 const int EXE_CTRL = 261;
 const int EXE_CTRL_ONLY = 262;
+const int FFT_CAPT = 263;
+const int FFT_EXEC = 264;
 
 
 ////////////////////////////////////////////////
@@ -187,34 +189,34 @@ uint16_t r_spi_16b(SPIClass *spi) {
 ////////////////////////////////////////////////
 void pdn_ctrl(int sig) {
     if( sig == 1){
-        digitalWrite(6 /**/, 0x1);
+        digitalWrite(3/*6  /|*/, 0x1);
         // Serial.println("PDN HIGH");
     }
     else{
-        digitalWrite(6 /**/, 0x0);
+        digitalWrite(3/*6  /|*/, 0x0);
         // Serial.println("PDN LOW");
     }
 }
 
 void rstn_ctrl(int sig) {
     if( sig == 1){
-        digitalWrite(4 /**/, 0x1);
+        digitalWrite(46/*4  /|*/, 0x1);
         // Serial.println("RSTN HIGH");
     }
     else{
-        digitalWrite(4 /**/, 0x0);
+        digitalWrite(46/*4  /|*/, 0x0);
         // Serial.println("RSTN LOW");
     }
 }
 
 uint8_t exec_ctrl(int sig){
     if( sig == 1){
-        digitalWrite(5 /**/, 0x1);
+        digitalWrite(14/*5  /|*/, 0x1);
         return 1;
         // Serial.println("EXEC HIGH");
     }
     else{
-        digitalWrite(5 /**/, 0x0);
+        digitalWrite(14/*5  /|*/, 0x0);
         return 0;
         // Serial.println("EXEC LOW");
     }
@@ -248,12 +250,12 @@ void setup() {
 ////////////////////////////////////////////////
 //Pin Setting Start
 ////////////////////////////////////////////////
-    pinMode(6 /**/, 0x03);
-    pinMode(4 /**/, 0x03);
-    pinMode(5 /**/, 0x03);
-    digitalWrite(6 /**/, 0x0);
-    digitalWrite(4 /**/, 0x0);
-    digitalWrite(5 /**/, 0x0);
+    pinMode(3/*6  /|*/, 0x03);
+    pinMode(46/*4  /|*/, 0x03);
+    pinMode(14/*5  /|*/, 0x03);
+    digitalWrite(3/*6  /|*/, 0x0);
+    digitalWrite(46/*4  /|*/, 0x0);
+    digitalWrite(14/*5  /|*/, 0x0);
 ////////////////////////////////////////////////
 //Pin Setting End
 ////////////////////////////////////////////////
@@ -263,7 +265,7 @@ void setup() {
 ////////////////////////////////////////////////
     //initialise two instances of the SPIClass attached to VSPI and HSPI respectively
     vspi = new SPIClass(0);
-    vspi->begin(36 /*GPIO36*/, 37 /*GPIO37*/, 35 /*GPIO35*/, 39 /*GPIO39*/); //SCLK, MISO, MOSI, SS
+    vspi->begin(47/*36  //GPIO36*/, 21/*CDTO//37  //GPIO37*/, 45/*CDTI//35  //GPIO35*/, 48/*39 //GPIO39*/); //SCLK, MISO, MOSI, SS
     //set up slave select pins as outputs as the Arduino API
     //doesn't handle automatically pulling SS low
     // pinMode(vspi->pinSS(), OUTPUT); //VSPI SS
@@ -316,9 +318,9 @@ void setup() {
 
     pCharacteristic->setCallbacks(new MyCallbacks());
 
-    // uint8_t macBT[6];
-    // esp_read_mac(macBT, ESP_MAC_BT);
-    // Serial.printf("[Bluetooth] Mac Address = %02X:%02X:%02X:%02X:%02X:%02X\r\n", macBT[0], macBT[1], macBT[2], macBT[3], macBT[4], macBT[5]);
+    uint8_t macBT[6];
+    esp_read_mac(macBT, ESP_MAC_BT);
+    Serial.printf("[Bluetooth] Mac Address = %02X:%02X:%02X:%02X:%02X:%02X\r\n", macBT[0], macBT[1], macBT[2], macBT[3], macBT[4], macBT[5]);
     // Start the service
     pService->start();
 
@@ -394,18 +396,19 @@ void loop() {
                             //wait_state(vspi, 0x08, 0x0F);//Wait STBY
                             //wait_state(vspi, 0x08, 0x0F);//Wait TRX
                             //wait_state(vspi, 0x09, 0x0F);//Wait RPU_DONE
-                            wait_state(vspi, 0x88, 0x03);//Wait STBY
-                            Serial.println("STBY state");
-                            wait_state(vspi, 0x88, 0x04);//Wait TRX
-                            Serial.println("TRX state");
+                            //wait_state(vspi, 0x88, 0x03);//Wait STBY
+                            //Serial.println("STBY state");
+                            //wait_state(vspi, 0x88, 0x04);//Wait TRX
+                            //Serial.println("TRX state");
                             wait_state(vspi, 0x89, 0x0C);//Wait RPU_DONE
                             //wait_state(vspi, 0x89, 0x07);//Wait RCFAR_DONE
-                            Serial.println("RCFAR_DONE");
+                            //Serial.println("RCFAR_DONE");
                             // st = millis();
-                            w_spi(vspi, 0x02, 0x03);//To Page 3
+                            //w_spi(vspi, 0x02, 0x03);//To Page 3 "Not access to 0x02 since ECC error(bug) is detected "
                             w_spi(vspi, 0x0A, 0x10);//TGTLST_HOLD
                             w_spi(vspi, 0x0A, 0x11);//SEQRD_ST
                             for (int i = 0; i<int_rx[3]; i++){
+                                delayMicroseconds(5000);
                                 for (int j = 0; j<int_rx[4+i]; j++){
                                     rddata_16b = r_spi_16b(vspi);
                                     txValue = float(rddata_16b);
@@ -418,7 +421,7 @@ void loop() {
                                 pCharacteristic->notify(); // Send the value to the app!
                                 // Serial.println(2*int_rx[4+i]);
                             }
-                            w_spi(vspi, 0x02, 0x03);//To Page 3
+                            //w_spi(vspi, 0x02, 0x03);//To Page 3 "Not access to 0x02 since ECC error(bug) is detected "
                             w_spi(vspi, 0x0A, 0x10);//TGTLST_HOLD
                             w_spi(vspi, 0x0A, 0x00);//TGTLST_UPDATE
                             t_sp = millis();
@@ -436,6 +439,88 @@ void loop() {
                         Serial.println("Finish TargetList Read");
                     }
                     break;
+                case FFT_CAPT:
+                    for(int tag = 0; tag<16; tag++){
+                        w_spi(vspi, 29, tag);//0x1D(d'29)にtagを書く(tag選択)
+                        for (int i = 0; i<int_rx[1]; i++){//int_rx[1]=tagあたりの読み出す回数(510byte(=85bin)/回) ※1binあたり6byteのため
+                            for (int j = 0; j<(int_rx[2+i]/6); j++){//int_rx[2]=1回目の読み出しバイト数(例:510),int_rx[3]=2回目の読み出しバイト数(例:258) [510+258]/6=128bin
+                                w_spi(vspi, 30, j+(i*85));//0x1E(d'30)に0~41を書く(bin0からbin41までの計42binを読む)
+                                for (int k = 31; k<34; k++){//0x1F(d'31)~0x21(d'33)を読んで(j=0のときは)rd_buf[0]~rd_buf[2]に格納(Iデータ)
+                                    rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
+                                    txValue = float(rd_buf[(k-31)+(j*6)]);
+                                }
+                                for (int k = 34; k<37; k++){//0x22(d'34)~0x24(d'36)を読んで(j=0のときは)rd_buf[3]~rd_buf[5]に格納(Qデータ)
+                                    rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
+                                    txValue = float(rd_buf[(k-31)+(j*6)]);
+                                }
+                            }
+                            pCharacteristic->setValue(rd_buf, int_rx[2+i]);
+                            pCharacteristic->notify(); // Send the value to the app!
+                        }
+                    }
+                    break;
+                case FFT_EXEC:
+                    flg_exec = exec_ctrl(int_rx[1]);
+                    //delay(500);
+                    if (flg_exec == 1){
+                        while (deviceConnected && rxValue.length() == 0){
+                            //delay(100);
+                            t_st = millis();
+                            //wait_state(vspi, 0x88, 0x03);//Wait STBY
+                            //Serial.println("STBY state");
+                            //wait_state(vspi, 0x88, 0x04);//Wait TRX
+                            //Serial.println("TRX state");
+                            wait_state(vspi, 0x89, 0x02);//Wait RFFT_DONE
+                            //wait_state(vspi, 0x89, 0x0C);//Wait RPU_DONE
+                            ////wait_state(vspi, 0x89, 0x07);//Wait RCFAR_DONE
+                            //Serial.println("RCFAR_DONE");
+                            // st = millis();
+                            //w_spi(vspi, 0x02, 0x03);//To Page 3 "Not access to 0x02 since ECC error(bug) is detected "
+                            w_spi(vspi, 0x0A, 0x10);//TGTLST_HOLD
+
+                            for(int tag = 0; tag<16; tag++){
+                                w_spi(vspi, 29, tag);//0x1D(d'29)にtagを書く(tag選択)
+                                for (int i = 0; i<int_rx[3]; i++){//int_rx[3]=tagあたりの読み出す回数(510byte(=85bin)/回) ※1binあたり6byteのため
+                                    delayMicroseconds(5000);
+                                    for (int j = 0; j<(int_rx[4+i]/6); j++){//int_rx[4]=1回目の読み出しバイト数(例:510),int_rx[5]=2回目の読み出しバイト数(例:258) [510+258]/6=128bin
+                                        w_spi(vspi, 30, j+(i*85));//0x1E(d'30)でbinを指定する。0 to 84 and 0(85) to 42(127)  , 510/6=85,  258/6=43
+                                        for (int k = 31; k<34; k++){//0x1F(d'31)~0x21(d'33)を読んで(j=0のときは)rd_buf[0]~rd_buf[2]に格納(Iデータ)
+                                            rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
+                                            //txValue = float(rd_buf[(k-31)+(j*6)]);
+                                            //if(k==32){Serial.println(txValue);}
+                                        }
+                                        for (int k = 34; k<37; k++){//0x22(d'34)~0x24(d'36)を読んで(j=0のときは)rd_buf[3]~rd_buf[5]に格納(Qデータ)
+                                            rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
+                                            //txValue = float(rd_buf[(k-31)+(j*6)]);
+                                        }
+                                    }
+                                    int getArrayLength = sizeof(rd_buf);
+                                    Serial.print("rd_buf= ");
+                                    Serial.print(int_rx[4+i]);
+                                    Serial.print(" / ");
+                                    Serial.print(getArrayLength);
+                                    Serial.println(" byte");
+                                    pCharacteristic->setValue(rd_buf, int_rx[4+i]);
+                                    pCharacteristic->notify(); // Send the value to the app!
+                                }
+                            }
+                            //w_spi(vspi, 0x02, 0x03);//To Page 3 "Not access to 0x02 since ECC error(bug) is detected "
+                            //w_spi(vspi, 0x0A, 0x10);//TGTLST_HOLD
+                            w_spi(vspi, 0x0A, 0x00);//TGTLST_UPDATE
+                            t_sp = millis();
+                            // Serial.println(t_sp-t_st);
+                            while (t_sp-t_st < int_rx[2]){
+                                t_sp = millis();
+                                // Serial.println(t_sp-t_st);
+                                // delay(1);
+                            }
+                            //Serial.print(t_sp-t_st);
+                            //Serial.println("msec");
+                        }
+                    }
+                    else{
+                        Serial.println("Finish FFT Capture");
+                    }
                 default:
                     rx_buf = int_rx[0];
             }

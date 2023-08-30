@@ -1,0 +1,29 @@
+#To NDS development set flle 1 on 2023/8/30
+#
+#pdn 0
+#rstn 0
+#sleep 1
+#pdn 1
+#sleep 1
+#startup
+reg_w 2 10 96 #0x60 RPU disable
+sleep 0.3
+reg_w 0 115 1 #0x01 AFE MASK setting
+sleep 0.3
+reg_w 0 116 181 #0xB5 AFE MASK setting
+sleep 0.3
+reg_w 1 15 45 # 0x2D TXG CAL(INIT) not execute (0x2F(47):execute)
+sleep 0.3
+reg_w 1 17 45 # 0x2D TXG CAL(CORR) not execute (0x2F(47):execute)
+sleep 0.3
+reg_w 2 18 103 #0x67 DeciFil:NoByp (0x6F(111):Default/Byp.,Auto)
+sleep 0.3
+#reg_w 5 38 200 #
+#sleep 0.3
+#reg_w 5 39 192 #
+#sleep 0.3
+reg_w 2 49 2 #0x02 ADC data output
+sleep 0.3
+reg_w 0 17 241 #0xF1 MIPI CSI-2 output enable
+sleep 1
+reg_r 0 2

@@ -10,13 +10,14 @@ class BLE_UART:
 	#ESP32_MAC = "F4:12:FA:5B:3D:81"# Shida-san's module
 	#ESP32_MAC = "F4:12:FA:5B:3F:A9"
 	#ESP32_MAC = "7C:DF:A1:FD:D6:4D"#Matsumoto-san's module
-	#ESP32_MAC = "7C:DF:A1:FD:6E:89"#Takahashi-san's module
+	#ESP32_MAC = "7C:DF:A1:FD:6E:89"
 	#ESP32_MAC = "7C:DF:A1:FD:D5:E9"
 	#ESP32_MAC = "68:B6:B3:21:AF:AD"#Kishigami-san's module
-	ESP32_MAC = "68:B6:B3:21:AF:65"
+	#ESP32_MAC = "68:B6:B3:21:AF:65"
 	#ESP32_MAC = "68:B6:B3:21:AF:39"
 	#ESP32_MAC = "68:B6:B3:21:B2:1D"
-	#ESP32_MAC = "7C:DF:A1:FD:73:21"
+	ESP32_MAC = "7C:DF:A1:FD:6E:89"
+	#ESP32_MAC = "7C:DF:A1:FD:73:21"#Takahashi-san's module
 	UART_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
 	UART_RX_CHAR_UUID = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
 	UART_TX_CHAR_UUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
@@ -52,7 +53,7 @@ class BLE_UART:
 		print(f"connecting to {self._peripheral_name} ...", end="")
 		client = self._client = BleakClient(device, disconnected_callback=self._handle_disconnect)
 		await client.connect()
-		await client.start_notify(self.UART_TX_CHAR_UUID, self._rx_handler)    
+		await client.start_notify(self.UART_TX_CHAR_UUID, self._rx_handler)
 		print(f" connected")
 		
 	async def disconnect(self):

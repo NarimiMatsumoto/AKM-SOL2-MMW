@@ -1,3 +1,4 @@
+import math
 
 class GEN_DATA:
 	# ESP32 Command
@@ -8,6 +9,8 @@ class GEN_DATA:
 	RSTN_CTRL = 260
 	EXE_CTRL = 261
 	EXE_CTRL_ONLY = 262
+	FFT_CAPT = 263
+	FFT_EXEC = 264
 	# ESP32 Command
 	
 	def __init__(self) -> None:
@@ -18,59 +21,70 @@ class GEN_DATA:
 		list = dec_data.split()
 	# SPI
 		if list[0] == "reg_w":
-				page = self._gen_data(0x02, int(list[1]), 0)
-				wr = self._gen_data(int(list[2]), int(list[3]), 0)
-				pgcmd = self._enc_cmd(page)
-				wrcmd = self._enc_cmd(wr)
+			page = self._gen_data(0x02, int(list[1]), 0)
+			wr = self._gen_data(int(list[2]), int(list[3]), 0)
+			pgcmd = self._enc_cmd(page)
+			wrcmd = self._enc_cmd(wr)
 		elif list[0] == "reg_r":
-				page = self._gen_data(0x02, int(list[1]), 0)
-				wr = self._gen_data(int(list[2]), 0x00, 1)
-				pgcmd = self._enc_cmd(page)
-				wrcmd = self._enc_cmd(wr)
+			page = self._gen_data(0x02, int(list[1]), 0)
+			wr = self._gen_data(int(list[2]), 0x00, 1)
+			pgcmd = self._enc_cmd(page)
+			wrcmd = self._enc_cmd(wr)
 		elif list[0] == "read_pg":
-				page = self._gen_data(0x02, int(list[1]), 0)
-				pgcmd = self._enc_cmd(page)
-				wrcmd = self._enc_cmd([self.R_PG])
+			page = self._gen_data(0x02, int(list[1]), 0)
+			pgcmd = self._enc_cmd(page)
+			wrcmd = self._enc_cmd([self.R_PG])
 		elif list[0] == "page":
 			page = self._gen_data(0x02, int(list[1]), 0)
 			pgcmd = self._enc_cmd(page)
 			wrcmd = ""
 	# Pin Control
 		elif list[0] == "pdn":
-				pgcmd = ""
-				wrcmd = self._enc_cmd([self.PDN_CTRL, int(list[1])])
+			pgcmd = ""
+			wrcmd = self._enc_cmd([self.PDN_CTRL, int(list[1])])
 		elif list[0] == "rstn":
-				pgcmd = ""
-				wrcmd = self._enc_cmd([self.RSTN_CTRL, int(list[1])])
+			pgcmd = ""
+			wrcmd = self._enc_cmd([self.RSTN_CTRL, int(list[1])])
 		elif list[0] == "execonly":
-				pgcmd = ""
-				wrcmd = self._enc_cmd([self.EXE_CTRL_ONLY, int(list[1])])
+			pgcmd = ""
+			wrcmd = self._enc_cmd([self.EXE_CTRL_ONLY, int(list[1])])
 		elif list[0] == "exec":
-				pgcmd = ""
-				wrcmd = self._enc_cmd([self.EXE_CTRL] + list[1:])
+			pgcmd = ""
+			wrcmd = self._enc_cmd([self.EXE_CTRL] + list[1:])
+		elif list[0] == "fft":
+			pgcmd = ""
+			wrcmd = self._enc_cmd([self.FFT_CAPT] + list[1:])
+		elif list[0] == "fftexec":
+			pgcmd = ""
+			wrcmd = self._enc_cmd([self.FFT_EXEC] + list[1:])
 	# Command
 		elif list[0] == "startup":
-				pgcmd = ""
-				wrcmd = list[0]
+			pgcmd = ""
+			wrcmd = list[0]
 		elif list[0] == "radar_go":
-				pgcmd = ""
-				wrcmd = list[0]
+			pgcmd = ""
+			wrcmd = list[0]
 		elif list[0] == "radar_end":
-				pgcmd = ""
-				wrcmd = list[0]
+			pgcmd = ""
+			wrcmd = list[0]
 		elif list[0] == "end":
 			pgcmd = ""
 			wrcmd = "end"
 		elif list[0] == "sleep":
 			pgcmd = ""
 			wrcmd = "sleep"
+		elif list[0] == "fft_capt":
+			pgcmd = ""
+			wrcmd = list[0]
+		elif list[0] == "radar_go_and_fft_capt":
+			pgcmd = ""
+			wrcmd = list[0]
 		else:
 			pgcmd = ""
 			wrcmd = ""
 		return pgcmd, wrcmd, list
 
 	def _gen_data(self, add:int, data:int, wr:int):
-		# cmd_list = [add, self.SET_ADD, data, self.SET_DAT]
 		cmd_list = []
 		if(wr == 1):
 			cmd_list.append(self.R_DAT)#Read
@@ -125,13 +139,24 @@ class GEN_DATA:
 			lst_q = pre_lst_q - 2**24 if pre_lst_q > (2**23 - 1) else pre_lst_q
 
 			# lst_mag = ((lst_i ** 2) + (lst_q ** 2)) ** 0.5
-			lst_mag = abs(complex(lst_i, lst_q))
+			#lst_mag = abs(complex(lst_i, lst_q))
+			lst_mag = abs(complex(lst_i, lst_q)) / 30
 		else:
 			lst_i = "-"
 			lst_q = "-"
 			lst_mag = "-"
 
 		return [lst_id, lst_range, lst_azi, lst_ele, lst_mag, lst_i, lst_q]
+
+	def _fftlst_gen(self, lst_dat):
+		bin_i = (lst_dat[0] << 16)+(lst_dat[1] << 8)+(lst_dat[2])
+		#bin_i = (lst_dat[0] << 16)+(lst_dat[2])
+		bin_q = (lst_dat[3] << 16)+(lst_dat[4] << 8)+(lst_dat[5])
+		#bin_q = (lst_dat[3] << 16)+(lst_dat[5])
+		bin_i = bin_i - 2**24 if bin_i > (2**23 - 1) else bin_i
+		bin_q = bin_q - 2**24 if bin_q > (2**23 - 1) else bin_q
+		bin_m = math.sqrt(bin_i**2 + bin_q**2)
+		return [bin_i, bin_q, bin_m]
 
 	def _split_list(self, l, n:int):
 		result = []
@@ -145,4 +170,4 @@ class GEN_DATA:
 				fps = 1/t_fin
 				print(f"Frame:{frm} {t_fin*10**3:.1f}msec ({fps:.1f} fps)")
 				for i in range(idnum):
-					print(f"ID:{lst_all[i][0]} R:{lst_all[i][1]} A:{lst_all[i][2]} E:{lst_all[i][3]} M:{lst_all[i][4]} I:{lst_all[i][5]} Q:{lst_all[i][6]}")
+					print(f"ID:{lst_all[i][0]} R:{lst_all[i][1]} A:{lst_all[i][2]} E:{lst_all[i][3]} M:{lst_all[i][4]:.3f} I:{lst_all[i][5]} Q:{lst_all[i][6]}")
