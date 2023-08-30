@@ -1,4 +1,3 @@
-#
 import math
 
 class GEN_DATA:
@@ -10,8 +9,7 @@ class GEN_DATA:
 	RSTN_CTRL = 260
 	EXE_CTRL = 261
 	EXE_CTRL_ONLY = 262
-	FFT_CAPT = 263
-	FFT_EXEC = 264
+	FFT_EXEC = 263
 	# ESP32 Command
 	
 	def __init__(self) -> None:
@@ -52,9 +50,6 @@ class GEN_DATA:
 		elif list[0] == "exec":
 			pgcmd = ""
 			wrcmd = self._enc_cmd([self.EXE_CTRL] + list[1:])
-		elif list[0] == "fft":
-			pgcmd = ""
-			wrcmd = self._enc_cmd([self.FFT_CAPT] + list[1:])
 		elif list[0] == "fftexec":
 			pgcmd = ""
 			wrcmd = self._enc_cmd([self.FFT_EXEC] + list[1:])
@@ -74,9 +69,6 @@ class GEN_DATA:
 		elif list[0] == "sleep":
 			pgcmd = ""
 			wrcmd = "sleep"
-		elif list[0] == "fft_capt":
-			pgcmd = ""
-			wrcmd = list[0]
 		elif list[0] == "radar_go_and_fft_capt":
 			pgcmd = ""
 			wrcmd = list[0]
