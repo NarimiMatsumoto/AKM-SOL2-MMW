@@ -113,8 +113,7 @@ const int PDN_CTRL = 259;
 const int RSTN_CTRL = 260;
 const int EXE_CTRL = 261;
 const int EXE_CTRL_ONLY = 262;
-const int FFT_CAPT = 263;
-const int FFT_EXEC = 264;
+const int FFT_EXEC = 263;
 
 
 ////////////////////////////////////////////////
@@ -423,26 +422,6 @@ void loop() {
                         Serial.println("Finish TargetList Read");
                     }
                     break;
-                case FFT_CAPT:
-                    for(int tag = 0; tag<16; tag++){
-                        w_spi(vspi, 29, tag);//0x1D(d'29)にtagを書く(tag選択)
-                        for (int i = 0; i<int_rx[1]; i++){//int_rx[1]=tagあたりの読み出す回数(510byte(=85bin)/回) ※1binあたり6byteのため
-                            for (int j = 0; j<(int_rx[2+i]/6); j++){//int_rx[2]=1回目の読み出しバイト数(例:510),int_rx[3]=2回目の読み出しバイト数(例:258) [510+258]/6=128bin
-                                w_spi(vspi, 30, j+(i*85));//0x1E(d'30)に0~41を書く(bin0からbin41までの計42binを読む)
-                                for (int k = 31; k<34; k++){//0x1F(d'31)~0x21(d'33)を読んで(j=0のときは)rd_buf[0]~rd_buf[2]に格納(Iデータ)
-                                    rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
-                                    txValue = float(rd_buf[(k-31)+(j*6)]);
-                                }
-                                for (int k = 34; k<37; k++){//0x22(d'34)~0x24(d'36)を読んで(j=0のときは)rd_buf[3]~rd_buf[5]に格納(Qデータ)
-                                    rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
-                                    txValue = float(rd_buf[(k-31)+(j*6)]);
-                                }
-                            }
-                            pCharacteristic->setValue(rd_buf, int_rx[2+i]);
-                            pCharacteristic->notify(); // Send the value to the app!
-                        }
-                    }
-                    break;
                 case FFT_EXEC:
                     flg_exec = exec_ctrl(int_rx[1]);
                     //delay(500);
@@ -463,17 +442,17 @@ void loop() {
                             w_spi(vspi, 0x0A, 0x10);//TGTLST_HOLD
 
                             for(int tag = 0; tag<16; tag++){
-                                w_spi(vspi, 29, tag);//0x1D(d'29)にtagを書く(tag選択)
-                                for (int i = 0; i<int_rx[3]; i++){//int_rx[3]=tagあたりの読み出す回数(510byte(=85bin)/回) ※1binあたり6byteのため
+                                w_spi(vspi, 29, tag);//0x1D(d'29) tag select
+                                for (int i = 0; i<int_rx[3]; i++){// Number of reads per tag (510byte(=85bin) at one time) *6byte/bin
                                     delayMicroseconds(5000);
-                                    for (int j = 0; j<(int_rx[4+i]/6); j++){//int_rx[4]=1回目の読み出しバイト数(例:510),int_rx[5]=2回目の読み出しバイト数(例:258) [510+258]/6=128bin
-                                        w_spi(vspi, 30, j+(i*85));//0x1E(d'30)でbinを指定する。0 to 84 and 0(85) to 42(127)  , 510/6=85,  258/6=43
-                                        for (int k = 31; k<34; k++){//0x1F(d'31)~0x21(d'33)を読んで(j=0のときは)rd_buf[0]~rd_buf[2]に格納(Iデータ)
+                                    for (int j = 0; j<(int_rx[4+i]/6); j++){//int_rx[4]=1st read byte(ex.510), int_rx[5]=2nd read byte (ex.258) [510+258]/6=128bin
+                                        w_spi(vspi, 30, j+(i*85));//0x1E(d'30) bin select, 0 to 84 and 0(85) to 42(127)  , 510/6=85,  258/6=43
+                                        for (int k = 31; k<34; k++){//0x1F(d'31) to  0x21(d'33) , stored on rd_buf[0]~rd_buf[2] at j=0 (I data)
                                             rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
                                             //txValue = float(rd_buf[(k-31)+(j*6)]);
                                             //if(k==32){Serial.println(txValue);}
                                         }
-                                        for (int k = 34; k<37; k++){//0x22(d'34)~0x24(d'36)を読んで(j=0のときは)rd_buf[3]~rd_buf[5]に格納(Qデータ)
+                                        for (int k = 34; k<37; k++){//0x22(d'34) to 0x24(d'36) , stored on rd_buf[3]~rd_buf[5] at j=0 (Q data)
                                             rd_buf[(k-31)+(j*6)] = r_spi(vspi, 128+k, 0x00);
                                             //txValue = float(rd_buf[(k-31)+(j*6)]);
                                         }
