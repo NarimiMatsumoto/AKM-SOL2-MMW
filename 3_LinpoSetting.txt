@@ -1,0 +1,132 @@
+#control : command
+#Read SPI 8bit : reg_r page(dec) add(dec)
+#Write SPI 8bit : reg_w page(dec) add(dec) data(dec)
+#Read all register : read_pg page(dec)
+#Powerdown pin control : pdn sig(dec)
+#Reset pin control : rstn sig(dec)
+#Startup sequence : startup 
+#Radar  operation start: radar_go
+#Radar  operation end: push Enter
+#
+pdn 0
+rstn 0
+sleep 1
+pdn 1
+sleep 1
+startup
+reg_r 2 10
+reg_w 2 10 0 # RPU disable,AngleFFT,ContinuedRadarProcess after CFAR
+reg_r 2 10
+reg_r 0 11
+reg_w 0 11 48 # Even if error is occured on RPU ,the state will be TRX.
+reg_r 0 11
+reg_r 0 13
+reg_w 0 13 4 # trigger period: 50ms
+reg_r 0 13
+reg_r 0 15
+reg_w 0 15 51 # CSI-2 Sampling point is 256 (Not Auto)
+reg_r 0 15
+reg_r 0 21
+reg_w 0 21 32 # 53.3Msps
+reg_r 0 21
+reg_r 0 26 #ADDR:0x1A
+reg_w 0 26 46 #h2E(SFCWA[13:8]=62GHz)
+reg_r 0 26
+reg_r 0 27 #ADDR:0x1B
+reg_w 0 27 224 #hE0(SFCWA[7:0]=62GHz)
+reg_r 0 27
+reg_r 0 25 #ADDR:0x19
+reg_w 0 25 1 # SFCWA upload
+reg_r 0 25
+reg_r 0 31 #ADDR:0x1F
+reg_w 0 31 0 #h00(SWAIT1A[15:8]=2us)
+reg_r 0 31
+reg_r 0 32 #ADDR:0x20
+reg_w 0 32 159 #h9F(SWAIT1A[7:0]=2us)
+reg_r 0 32
+reg_r 0 35 #ADDR:0x23
+reg_w 0 35 0 #h00(SWAIT2A[15:8]=0.0125us)
+reg_r 0 35
+reg_r 0 36 #ADDR:0x24
+reg_w 0 36 0 #h00(SWAIT2A[7:0]=0.0125us)
+reg_r 0 36
+reg_r 0 39 #ADDR:0x27
+reg_w 0 39 5 #h05(STM1A[12:8]=16.6us)
+reg_r 0 39
+reg_r 0 40 #ADDR:0x28
+reg_w 0 40 47  #h2F(STM1A[7:0]=16.6us)
+reg_r 0 40
+reg_r 0 43 #ADDR:0x2B
+reg_w 0 43 0 #h00(STM2A[12:8]=2us)
+reg_r 0 43
+reg_r 0 44 #ADDR:0x2C
+reg_w 0 44 159 #h9F(STM2A[7:0]=2us)
+reg_r 0 44
+reg_r 0 47 #ADDR:0x2F
+reg_w 0 47 1 #h01(SFSWEEPA[0]=-3GHz)
+reg_r 0 47
+reg_r 0 48 #ADDR:0x30
+reg_w 0 48 181 #hB5(SFSWEEPA[7:0]=-3GHz)
+reg_r 0 48
+reg_r 0 115 #ADDR:0x73
+reg_w 0 115 5 #h05(AFEMSK_TM1[4:0]=18.6us) Masked Saturation detect area (0x0056(0/86):Default/1.075us)
+reg_r 0 115
+reg_r 0 116 #ADDR:0x74
+reg_w 0 116 208 #hD0(AFEMSK_TM1[4:0]=18.6us) Masked Saturation detect area (0x0056(0/86):Default/1.075us)
+reg_r 0 116
+reg_r 1 15 #ADDR:0x0F
+reg_w 1 15 61 #h3D TXG CAL(INIT) not execute (0x3F(63):execute)
+reg_r 1 15
+reg_r 1 17 #ADDR:0x11
+reg_w 1 17 61 #h3D TXG CAL(CORR) not execute (0x2F(47):execute)
+reg_r 1 17
+reg_r 2 18 #ADDR:0x12
+reg_w 2 18 103 #h67 DeciFil:NoByp (0x6F(111):Default/Byp.,Auto)
+reg_r 2 18
+reg_r 2 20 #ADDR:0x14
+reg_w 2 20 3 #h03 Antenna pattern setting
+reg_r 2 20
+reg_r 2 82
+reg_w 2 82 72 #h48 MTI filter setting (0x45(69):Default)
+reg_r 2 82
+reg_r 2 85 #ADDR:0x55
+reg_w 2 85 4 #h01 Range CFAR threshold (0x01:Default)
+reg_r 2 85
+reg_r 2 86 #ADDR:0x56
+reg_w 2 86 153 #h99 Range CFAR threshold (0x99(153):Default)
+reg_r 2 86
+reg_r 2 87
+reg_w 2 87 3 #h03 8bins only, bin0-bin3 ignored (0x31(49):Default)
+reg_r 2 87
+reg_r 2 89 #ADDR:0x59
+reg_w 2 89 16 #h10 only max bin (0x00:all bins)
+reg_r 2 89
+reg_r 2 90 #ADDR:0x5A
+reg_w 2 90 51 #h33 Angle CFAR Guard/Window bin (0x33(51):Default)
+reg_r 2 90
+reg_r 2 91 #ADDR:0x5B
+reg_w 2 91 8 #h04 Angle CFAR threshold (0x04:Default)
+reg_r 2 91
+reg_r 2 92 #ADDR:0x5C
+reg_w 2 92 153 #h99 Angle CFAR threshold (0x99:Default)
+reg_r 2 92
+reg_r 2 10
+reg_w 2 10 1 # RPU enable,AngleFFT,ContinuedRadarProcess after CFAR
+reg_r 2 10
+#reg_r 5 38
+#reg_w 5 38 157 # TXG CAL REF.(0xA8C0(168/192):Default)
+#reg_r 5 38
+#reg_r 5 39
+#reg_w 5 39 8 # TXG CAL REF.(0xA8C0(168/192):Default)
+#reg_r 5 39
+#reg_r 0 8
+#reg_w 0 10 2 # Go to Standby state
+#sleep 0.1
+#reg_r 0 8
+#reg_w 0 10 8 # Go to LP state
+#sleep 0.02
+#reg_r 0 8
+#reg_r 0 2
+#reg_w 0 2 16
+#reg_r 0 2
+radar_go

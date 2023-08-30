@@ -1,0 +1,81 @@
+#Radar_Go set flle 1 on 2023/7/31
+#
+#pdn 0
+#rstn 0
+#sleep 1
+#pdn 1
+#sleep 1
+#startup
+reg_w 2 10 0 # RPU disable,AngleFFT,ContinuedRadarProcess after CFAR
+sleep 0.3
+reg_w 0 11 48 # Even if error is occured on RPU ,the state will be TRX.
+sleep 0.3
+reg_w 0 13 4 # trigger period: 50ms
+sleep 0.3
+reg_w 0 15 51 # CSI-2 Sampling point is 256 (Not Auto)
+sleep 0.3
+reg_w 0 21 32 # 53.3Msps
+sleep 0.3
+reg_w 0 26 46 #h2E(SFCWA[13:8]=62GHz)
+sleep 0.3
+reg_w 0 27 224 #hE0(SFCWA[7:0]=62GHz)
+sleep 0.3
+reg_w 0 25 1 # SFCWA upload
+sleep 0.3
+reg_w 0 31 0 #h00(SWAIT1A[15:8]=2us)
+sleep 0.3
+reg_w 0 32 159 #h9F(SWAIT1A[7:0]=2us)
+sleep 0.3
+reg_w 0 35 0 #h00(SWAIT2A[15:8]=0.0125us)
+sleep 0.3
+reg_w 0 36 0 #h00(SWAIT2A[7:0]=0.0125us)
+sleep 0.3
+reg_w 0 39 5 #h05(STM1A[12:8]=16.6us)
+sleep 0.3
+reg_w 0 40 47  #h2F(STM1A[7:0]=16.6us)
+sleep 0.3
+reg_w 0 43 0 #h00(STM2A[12:8]=2us)
+sleep 0.3
+reg_w 0 44 159 #h9F(STM2A[7:0]=2us)
+sleep 0.3
+reg_w 0 47 1 #h01(SFSWEEPA[0]=-3GHz)
+sleep 0.3
+reg_w 0 48 181 #hB5(SFSWEEPA[7:0]=-3GHz)
+sleep 0.3
+reg_w 0 115 5 #h05(AFEMSK_TM1[4:0]=18.6us) Masked Saturation detect area (0x0056(0/86):Default/1.075us)
+sleep 0.3
+reg_w 0 116 208 #hD0(AFEMSK_TM1[4:0]=18.6us) Masked Saturation detect area (0x0056(0/86):Default/1.075us)
+sleep 0.3
+reg_w 1 15 45 #h2D TXG CAL(INIT) not execute (0x2F(47):execute)
+sleep 0.3
+reg_w 1 17 45 #h2D TXG CAL(CORR) not execute (0x2F(47):execute)
+sleep 0.3
+reg_w 2 18 103 #h67 DeciFil:NoByp (0x6F(111):Default/Byp.,Auto)
+sleep 0.3
+reg_w 2 20 3 #h03 Antenna pattern setting(ANT_ARRAY)
+sleep 0.3
+reg_w 2 22 0 #h0 Antenna pattern setting(ANT_PITCH)
+sleep 0.3
+reg_w 2 82 72 #h48 MTI filter setting (0x45(69):Default)
+sleep 0.3
+reg_w 2 85 4 #h01 Range CFAR threshold (0x01:Default)
+sleep 0.3
+reg_w 2 86 153 #h99 Range CFAR threshold (0x99(153):Default)
+sleep 0.3
+reg_w 2 87 3 #h03 8bins only, bin0-bin3 ignored (0x31(49):Default)
+sleep 0.3
+reg_w 2 89 16 #h10 only max bin (0x00:all bins)
+sleep 0.3
+reg_w 2 90 51 #h33 Angle CFAR Guard/Window bin (0x33(51):Default)
+sleep 0.3
+reg_w 2 91 8 #h04 Angle CFAR threshold (0x04:Default)
+sleep 0.3
+reg_w 2 92 153 #h99 Angle CFAR threshold (0x99:Default)
+sleep 0.3
+reg_w 2 10 17 # RPU enable,AngleFFT, Not ContinuedRadarProcess after CFAR
+sleep 1
+reg_r 0 8
+sleep 1
+reg_r 0 2
+#sleep 0.3
+#reg_w 0 2 16 # ERR_ONESHOT temporary Disabled

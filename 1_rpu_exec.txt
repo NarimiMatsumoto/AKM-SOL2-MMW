@@ -8,6 +8,11 @@
 #Radar  operation start: radar_go
 #Radar  operation end: push Enter
 #
+pdn 0
+rstn 0
+sleep 1
+pdn 1
+sleep 1
 startup
 reg_r 0 115
 reg_w 0 115 1 # Masked Saturation detect area (0x0056(0/86):Default/1.075us)
@@ -43,4 +48,4 @@ reg_r 0 8
 reg_r 0 2
 reg_w 0 2 16
 reg_r 0 2
-radar_go
+#radar_go
