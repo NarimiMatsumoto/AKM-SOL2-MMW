@@ -1,4 +1,4 @@
-#
+##
 #control : command
 #Read SPI 8bit : reg_r page(dec) add(dec)
 #Write SPI 8bit : reg_w page(dec) add(dec) data(dec)
