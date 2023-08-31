@@ -1,5 +1,10 @@
-##
-#5_Initialize.txt
+##################
+#0_initial_set.txt
+##################
+#page [page]
+#sleep [time]
+#pdn [polarity]
+#rstn [polarity]
 #
 pdn 0
 rstn 0
@@ -11,5 +16,3 @@ page 1
 sleep 0.3
 page 0
 sleep 0.3
-#reg_r 0 1
-#reg_r 0 2
