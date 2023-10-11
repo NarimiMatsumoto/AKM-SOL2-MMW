@@ -310,14 +310,12 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 		else:
 	#SPI
 			if list[0] == "reg_r":
-					#print("test001")
 					await self._queue_clr()
 					#print("list = ", pgcmd, wrcmd, list)
 					rd = await self._read_spi(pgcmd, wrcmd, list, 1)
 					return rd
 			elif list[0] == "read_pg":
 				await self._queue_clr()
-				#print("list = ", pgcmd, wrcmd, list)
 				rdlst = await self._read_pg(pgcmd, wrcmd, list, 1)
 				return rdlst
 			elif list[0] == "reg_w":
@@ -345,4 +343,19 @@ class Integ_Method(BLE_UART, GEN_DATA, GEN_GRAPH):
 			elif list[0] == "sleep":
 				await asyncio.sleep(float(list[1]))
 
-				
+######Master(Write Execute)######
+	async def _exe_cmd_wr(self, cmdall):
+		if not cmdall:
+			print("Exit")
+			await self.disconnect()
+		else:				
+			wrcmd_list = self._sort_gen_data(cmdall)
+			encoded_wrcmd_list = ','.join(map(str, wrcmd_list)) + '\n'
+			byte_count = len(encoded_wrcmd_list.encode())
+			if byte_count > 512:
+				print("Byte count : "+str(byte_count)+" bytes. Up to 512 bytes can be sent at a time.")
+			else:
+				await self._send_data(encoded_wrcmd_list)
+			print("All wrcmd :", encoded_wrcmd_list)
+
+

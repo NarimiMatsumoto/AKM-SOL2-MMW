@@ -34,12 +34,14 @@ class Window(tk.Tk):
 	global readdata
 	global p_readdata
 	global lines
+	global lines_wr
 	i = 0
 	j = 0
 	event = 0
 	readdata = 0
 	p_readdata = [0] * 128
 	lines = []
+	lines_wr = []
 
 	def __init__(self, loop):
 
@@ -47,18 +49,18 @@ class Window(tk.Tk):
 		self.root = tk.Tk()
 
 		self.root.title('AK5816')
-		self.root.geometry("1250x710")
+		self.root.geometry("1250x870")
 		#self.label = tk.Label(text="")
 		#self.label.grid(row=0, columnspan=2, padx=(8, 8), pady=(16, 0))
 		
-		labelframe_1 = tk.LabelFrame(self.root, width=400, height=200, borderwidth=0, bd=0, text="", font=('meiryo', 12))
+		labelframe_1 = tk.LabelFrame(self.root, width=400, height=270, borderwidth=0, bd=0, text="", font=('meiryo', 12))
 		labelframe_2 = tk.LabelFrame(self.root, width=400, height=150, borderwidth=0, bd=4, text="One register setting", font=('meiryo', 12))
 		labelframe_3 = tk.LabelFrame(self.root, width=400, height=250, borderwidth=0, bd=4, text="Page read", font=('meiryo', 12))
-		labelframe_4 = tk.LabelFrame(self.root, width=400, height=100, borderwidth=0, bd=0, text="", font=('meiryo', 12))
-		frame5 = tk.Frame(self.root, width=400, height=350, borderwidth=1, relief='solid')
-		frame6 = tk.Frame(self.root, width=400, height=350, borderwidth=1, relief='solid')
-		frame7 = tk.Frame(self.root, width=400, height=350, borderwidth=1, relief='solid')
-		frame8 = tk.Frame(self.root, width=400, height=350, borderwidth=1, relief='solid')
+		labelframe_4 = tk.LabelFrame(self.root, width=400, height=170, borderwidth=0, bd=0, text="", font=('meiryo', 12))
+		frame5 = tk.Frame(self.root, width=400, height=400, borderwidth=1, relief='solid')
+		frame6 = tk.Frame(self.root, width=400, height=400, borderwidth=1, relief='solid')
+		frame7 = tk.Frame(self.root, width=400, height=400, borderwidth=1, relief='solid')
+		frame8 = tk.Frame(self.root, width=400, height=400, borderwidth=1, relief='solid')
 
 		labelframe_1.grid_propagate(False)
 		labelframe_2.grid_propagate(False)
@@ -73,10 +75,10 @@ class Window(tk.Tk):
 		labelframe_2.grid(row=1, column=0,padx=10,pady=2)
 		labelframe_3.grid(row=2, column=0,padx=10,pady=2)
 		labelframe_4.grid(row=3, column=0,padx=10,pady=2)
-		frame5.grid(row=0, column=1, rowspan=2, sticky=tk.N)
-		frame6.grid(row=0, column=2, rowspan=2, sticky=tk.N)
-		frame7.grid(row=2, column=1, rowspan=2, sticky=tk.N)
-		frame8.grid(row=2, column=2, rowspan=2, sticky=tk.N)
+		frame5.grid(row=0, column=1, rowspan=2, sticky=tk.N, padx=5, pady=20)
+		frame6.grid(row=0, column=2, rowspan=2, sticky=tk.N, padx=5, pady=20)
+		frame7.grid(row=2, column=1, rowspan=2, sticky=tk.N, padx=5, pady=10)
+		frame8.grid(row=2, column=2, rowspan=2, sticky=tk.N, padx=5, pady=10)
 
 		button_connect = tk.Button(labelframe_1, text=" Connect  ", width=10, command=lambda: self.loop.create_task(self.connect_ble()))
 		button_discon  = tk.Button(labelframe_1, text="Disconnect", width=10, command=lambda: asyncio.create_task(self.discongui()))
@@ -85,6 +87,8 @@ class Window(tk.Tk):
 		button_radargo = tk.Button(labelframe_1, text=" Radar go ", width=10, command=lambda: asyncio.create_task(self.rggui()))
 		button_setfile = tk.Button(labelframe_1, text=" SET File ", width=10, command=lambda: asyncio.create_task(self.sfgui()))
 		button_exefile = tk.Button(labelframe_1, text=" EXEC File", width=10, command=lambda: asyncio.create_task(self.efgui()))
+		button_wrset   = tk.Button(labelframe_1, text="  WR SET  ", width=10, command=lambda: asyncio.create_task(self.wsgui()))
+		button_wrexe   = tk.Button(labelframe_1, text="  WR EXEC ", width=10, command=lambda: asyncio.create_task(self.wegui()))
 		button_pdnl    = tk.Button(labelframe_1, text="  PDN L   ", width=10, command=lambda: asyncio.create_task(self.pdngui(0)))
 		button_pdnh    = tk.Button(labelframe_1, text="  PDN H   ", width=10, command=lambda: asyncio.create_task(self.pdngui(1)))
 		button_rstnl   = tk.Button(labelframe_1, text="  RSTN L  ", width=10, command=lambda: asyncio.create_task(self.rstngui(0)))
@@ -94,17 +98,19 @@ class Window(tk.Tk):
 
 		button_connect.grid(row=0, column=0, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
 		button_discon.grid(row=0, column=1, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
-		button_stop.grid(row=0, column=2, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_stop.grid(row=1, column=2, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
 		button_start.grid(row=1, column=0, sticky=tk.W,  padx=5, pady=8, ipadx=5, ipady=5)
 		button_radargo.grid(row=1, column=1, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
-		button_setfile.grid(row=1, column=2, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
-		button_exefile.grid(row=1, column=3, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
-		button_pdnl.grid(row=2, column=0, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
-		button_pdnh.grid(row=3, column=0, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
-		button_rstnl.grid(row=2, column=1, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
-		button_rstnh.grid(row=3, column=1, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
-		button_execl.grid(row=2, column=2, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
-		button_exech.grid(row=3, column=2, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_setfile.grid(row=2, column=0, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_exefile.grid(row=2, column=1, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_wrset.grid(row=2, column=2, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_wrexe.grid(row=2, column=3, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_pdnl.grid(row=3, column=0, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_pdnh.grid(row=4, column=0, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_rstnl.grid(row=3, column=1, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_rstnh.grid(row=4, column=1, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_execl.grid(row=3, column=2, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
+		button_exech.grid(row=4, column=2, sticky=tk.W, padx=5, pady=8, ipadx=5, ipady=5)
 
 		button_write = tk.Button(labelframe_2, text="Write", width=10, command=lambda: asyncio.create_task(self.wrgui(txt_wpage.get(), txt_waddress.get(), txt_wdata.get())))
 		button_read  = tk.Button(labelframe_2, text="Read ", width=10, command=lambda: [asyncio.create_task(self.rdgui(txt_wpage.get(), txt_waddress.get())), readback(readdata)])		
@@ -559,7 +565,7 @@ class Window(tk.Tk):
 				p_readdata = [0] * 128
 				j -= 1
 
-		canvas_a = tk.Canvas(frame5,width=400,height=350)
+		canvas_a = tk.Canvas(frame5,width=400,height=400)
 		canvas_a.propagate(False)
 		gen_graph_instance = GEN_GRAPH()
 		[fig, ax] = gen_graph_instance._init_graph()
@@ -669,15 +675,67 @@ class Window(tk.Tk):
 						pass
 					else:
 						lines.append(line.strip())
-		
+				
 		lines = [line.encode() for line in lines]
 		event = 0 # command event
 		return lines
+
+# Write set
+	async def wsgui(self):
+		global lines_wr, event
+		initial_dir = os.getcwd()
+		file_path = filedialog.askopenfilename(initialdir=initial_dir)
+		lines_wr = []
+
+		if not file_path:
+			print("ファイルが選択されませんでした。")
+			lines_wr = []
+			return lines_wr
+
+		try:
+			with open(file_path, 'r', encoding='utf-8') as f:
+				for line in f:
+					if "#" in line[0]:
+						pass
+					else:
+						lines_wr.append(line.strip())
+		except UnicodeDecodeError:
+			with open(file_path, 'r', encoding='shift_jis') as f:
+				for line in f:
+					if "#" in line[0]:
+						pass
+					else:
+						lines_wr.append(line.strip())
+		
+		result = []
+		page_temp = ""		
+		for row in lines_wr:
+			elements = row.split()
+			if elements[0] == "reg_w":
+				if page_temp != elements[1]:
+					result.append("reg_w 0 2 " + elements[1])
+					result.append(row)
+					page_temp = elements[1]
+				else:
+					result.append(row)
+					page_temp = elements[1]
+			else:
+				print("skip \""+elements[0]+" ...\" because it is not \"reg_w\".")
+		
+		lines_wr = [line.encode() for line in result]
+
+		event = 0 # command event
+		return lines_wr
 
 	# Execute file
 	async def efgui(self):
 		global event
 		event = 4 # command event
+
+	# Write execute
+	async def wegui(self):
+		global event
+		event = 5 # command event
 
 	async def command(self):
 		global event
@@ -700,6 +758,13 @@ class Window(tk.Tk):
 		return data
 
 	async def command_exec(self):
+		global event
+		text = "sleep 0.5"
+		data = text.encode
+		event = 0 # Go to idle state
+		return data
+
+	async def command_wr_exec(self):
 		global event
 		text = "sleep 0.5"
 		data = text.encode
@@ -734,12 +799,9 @@ class Window(tk.Tk):
 				while True:
 					if(event == 0):# idle state
 						data = await loop.run_in_executor(None, await self.idle())
-						#print(data)
 						await uart._exe_cmd(data)
-						#print(event)
 					elif(event == 1):# Write command event
 						data = await loop.run_in_executor(None, await self.command())
-						#print(data)
 						await uart._exe_cmd(data)
 					elif(event == 2):# Read back command event
 						data = await loop.run_in_executor(None, await self.command_read())
@@ -749,11 +811,12 @@ class Window(tk.Tk):
 						p_readdata = await uart._exe_cmd(data)
 					elif(event == 4):# 
 						for cmd in lines:
-							#print(cmd)
 							await uart._exe_cmd(cmd)
-							#print(event)
-						#await asyncio.sleep(0.1)
 						data = await loop.run_in_executor(None, await self.command_exec())
+						await uart._exe_cmd(data)
+					elif(event == 5):# Write Execute back command event
+						data = await loop.run_in_executor(None, await self.command_wr_exec())
+						await uart._exe_cmd_wr(lines_wr)
 						await uart._exe_cmd(data)
 					elif(event == 99):# disconnect
 						break

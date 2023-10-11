@@ -8,6 +8,7 @@ class GEN_DATA:
 	RSTN_CTRL = 260
 	EXE_CTRL = 261
 	EXE_CTRL_ONLY = 262
+	W_ALLDAT = 263
 	# ESP32 Command
 	
 	def __init__(self) -> None:
@@ -91,6 +92,15 @@ class GEN_DATA:
 		enc_cmd_list = str_cmd
 		return enc_cmd_list
 
+	def _sort_gen_data(self, cmdall):
+		wrcmd_list = [self.W_ALLDAT]
+		for line_cmdall in cmdall:
+			dec_data = line_cmdall.decode()
+			list_cmdall = dec_data.split()
+			wrcmd_list.append(int(list_cmdall[2]))
+			wrcmd_list.append(int(list_cmdall[3]))
+		return wrcmd_list
+
 	def _get_bit(self, dat:str, sft:int, mask:int):
 		return ((int(dat) >> sft) & mask)
 
@@ -125,7 +135,7 @@ class GEN_DATA:
 			lst_q = pre_lst_q - 2**24 if pre_lst_q > (2**23 - 1) else pre_lst_q
 
 			# lst_mag = ((lst_i ** 2) + (lst_q ** 2)) ** 0.5
-			lst_mag = abs(complex(lst_i, lst_q))
+			lst_mag = abs(complex(lst_i, lst_q))/30
 		else:
 			lst_i = "-"
 			lst_q = "-"

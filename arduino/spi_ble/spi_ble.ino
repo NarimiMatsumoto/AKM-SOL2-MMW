@@ -55,6 +55,9 @@ SPIClass * vspi = NULL;
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
+#include <thread>
+#include <chrono>
+
 BLEServer *pServer = NULL;
 BLECharacteristic * pCharacteristic;
 bool deviceConnected = false;
@@ -113,6 +116,7 @@ const int PDN_CTRL = 259;
 const int RSTN_CTRL = 260;
 const int EXE_CTRL = 261;
 const int EXE_CTRL_ONLY = 262;
+const int W_ALLDAT = 263;
 
 
 ////////////////////////////////////////////////
@@ -328,7 +332,8 @@ void loop() {
             Serial.println(str_rx);
             // Serial.println(sizeof(str_rx));
 
-            int int_rx[8];
+            //int int_rx[8];
+            int int_rx[127] = {0};
             int cmdnum;
             char txString[8];
             // String txString_temp;
@@ -342,6 +347,12 @@ void loop() {
             switch(int_rx[0]){
                 case W_DAT:
                     w_spi(vspi, int_rx[1], int_rx[2]);
+                    break;
+                case W_ALLDAT:
+                    for (int i = 1; i<cmdnum-1; i+=2){
+                        w_spi(vspi, int_rx[i], int_rx[i+1]);
+                        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    }
                     break;
                 case R_DAT:
                     //Serial.print("vspi=");
@@ -425,7 +436,8 @@ void loop() {
             }
         // str_rx = "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
         // cmdnum = stringToIntValues( str_rx, int_rx, ',');
-        int_rx[8] = {0};
+        //int_rx[8] = {0};
+        int_rx[127] = {0};
         str_rx = "";
         txValue = 0;
         }
