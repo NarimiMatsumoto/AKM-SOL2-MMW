@@ -55,8 +55,6 @@ SPIClass * vspi = NULL;
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
-#include <thread>
-#include <chrono>
 
 BLEServer *pServer = NULL;
 BLECharacteristic * pCharacteristic;
@@ -351,7 +349,6 @@ void loop() {
                 case W_ALLDAT:
                     for (int i = 1; i<cmdnum-1; i+=2){
                         w_spi(vspi, int_rx[i], int_rx[i+1]);
-                        std::this_thread::sleep_for(std::chrono::milliseconds(100));
                     }
                     break;
                 case R_DAT:
